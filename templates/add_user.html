@@ -1,0 +1,98 @@
+{% extends "layout.html" %}
+{% block title %}Add User - Admin Panel{% endblock %}
+{% block content %}
+<style>
+    .badge-user {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .badge-admin {
+        background-color: #28a745;
+        color: white;
+    }
+</style>
+<div class="container mt-4">
+    <h1 class="mb-4">Add New User</h1>
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Create New User</h2>
+            <form action="{{ url_for('admin.add_user') }}" method="POST">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" class="form-control" id="username" name="username" required>
+                    <small class="form-text text-muted">Username for login</small>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" class="form-control" id="password" name="password" required minlength="6">
+                    <small class="form-text text-muted">Password must be at least 6 characters long</small>
+                </div>
+                <div class="form-group">
+                    <label for="confirm_password">Confirm Password:</label>
+                    <input type="password" class="form-control" id="confirm_password" name="confirm_password" required
+                        minlength="6">
+                </div>
+                <div class="form-group">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="is_admin" name="is_admin">
+                        <label class="form-check-label" for="is_admin">
+                            Administrator Privileges
+                        </label>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success">
+                    <i class="fa fa-plus"></i> Create User
+                </button>
+                <a href="{{ url_for('admin.manage_users') }}" class="btn btn-secondary">
+                    <i class="fa fa-arrow-left"></i> Back to Users
+                </a>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <h2>User Information</h2>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Local Authentication</h5>
+                    <p class="card-text">
+                        <strong>Username:</strong> Unique identifier for the user<br>
+                        <strong>Email:</strong> User's email address<br>
+                        <strong>Password:</strong> Secure password for local authentication<br>
+                        <strong>Admin Privileges:</strong> Grants full administrative access
+                    </p>
+                    <div class="alert alert-info">
+                        <small>
+                            <i class="fa fa-info-circle"></i>
+                            <strong>Note:</strong> All users will authenticate locally using the password provided.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Validación de contraseñas coincidentes
+    document.querySelector('form').addEventListener('submit', function (e) {
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirm_password').value;
+
+        if (password !== confirmPassword) {
+            e.preventDefault();
+            alert('Passwords do not match!');
+            return false;
+        }
+
+        if (password.length < 6) {
+            e.preventDefault();
+            alert('Password must be at least 6 characters long!');
+            return false;
+        }
+    });
+</script>
+{% endblock %}

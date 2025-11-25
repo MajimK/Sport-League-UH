@@ -6,18 +6,26 @@
         background-color: #007bff;
         color: white;
     }
+
     .badge-admin {
         background-color: #28a745;
         color: white;
     }
 </style>
 <div class="container mt-4">
-    <h1 class="mb-4">Manage Users</h1>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Manage Users</h1>
+        <a href="{{ url_for('admin.add_user') }}" class="btn btn-success">
+            <i class="fa fa-plus"></i> Add New User
+        </a>
+    </div>
+
     <div class="row">
         <div class="col-md-6">
             <h2 id="form-title">Edit User Privileges</h2>
             <form action="{{ url_for('admin.manage_users') }}" method="POST">
                 <input type="hidden" id="user_id" name="user_id">
+                <input type="hidden" id="action" name="action" value="toggle_admin"> <!-- AÑADIR ESTE CAMPO -->
                 <div class="form-group">
                     <label for="is_admin">Privilege:</label>
                     <select class="form-control" id="is_admin" name="is_admin" required>
@@ -25,39 +33,62 @@
                         <option value="true">Admin</option>
                     </select>
                 </div>
-                <button type="submit" name="submit" class="btn btn-primary" id="submit-button">Update Privilege</button>
+                <button type="submit" class="btn btn-primary" id="submit-button">Update Privilege</button>
             </form>
         </div>
         <div class="col-md-6">
             <h2>Existing Users</h2>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Username</th>
-                        <th>Privilege</th>
-                        <th>Edit</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for user in users %}
-                    <tr>
-                        <td>{{ user[0] }}</td>
-                        <td>{{ user[1] }}</td>
-                        <td>
-                            <span class="badge {% if user[2] %}badge-admin{% else %}badge-user{% endif %}">
-                                {% if user[2] %}Admin{% else %}User{% endif %}
-                            </span>
-                        </td>
-                        <td>
-                            <button class="btn btn-success btn-sm" onclick="editUser('{{ user[0] }}', '{{ user[2] }}')">
-                                <i class="fa fa-pencil-alt"></i>
-                            </button>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            {% if users %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Privilege</th>
+                            <th>Edit</th>
+                            <th>Delete</th> <!-- AÑADIR COLUMNA DELETE -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>{{ user[0] }}</td>
+                            <td>{{ user[1] }}</td>
+                            <td>{{ user[2] if user[2] else 'N/A' }}</td>
+                            <td>
+                                <span class="badge {% if user[3] %}badge-admin{% else %}badge-user{% endif %}">
+                                    {% if user[3] %}Admin{% else %}User{% endif %}
+                                </span>
+                            </td>
+                            <td>
+                                <button class="btn btn-success btn-sm"
+                                    onclick="editUser('{{ user[0] }}', '{{ user[3] }}')">
+                                    <i class="fa fa-pencil-alt"></i>
+                                </button>
+                            </td>
+                            <td>
+                                <form action="{{ url_for('admin.manage_users') }}" method="POST"
+                                    style="display: inline;">
+                                    <input type="hidden" name="user_id" value="{{ user[0] }}">
+                                    <input type="hidden" name="action" value="delete">
+                                    <button type="submit" class="btn btn-danger btn-sm"
+                                        onclick="return confirm('Are you sure you want to delete user {{ user[1] }}?')">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                No users found. <a href="{{ url_for('admin.add_user') }}">Add the first user</a>.
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>

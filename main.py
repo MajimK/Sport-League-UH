@@ -35,92 +35,51 @@ def home():
             return redirect(url_for('user'))
     else:
         return redirect(url_for('login'))
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
         
-        # Autenticar contra LDAP
-        _, ldap_user = check_ldap(username, password)
-        print(ldap_user)
-        print(_)
-        if ldap_user:
-            db = get_db()
-            cur = db.cursor()
-            
-            # Verificar si el usuario existe en la base de datos (solo usuarios con permisos especiales)
-            cur.execute(
-                'SELECT user_id, username, is_admin FROM users WHERE username = %s',
-                (username,)
-            )
-            user = cur.fetchone()
-            
-            if user:
-                # Usuario con permisos especiales - usar permisos de la base de datos
+        print(f"🔐 Attempting login for: {username}")
+        
+        db = get_db()
+        cur = db.cursor()
+        
+        # Buscar usuario en la base de datos
+        cur.execute(
+            'SELECT user_id, username, password, is_admin FROM users WHERE username = %s',
+            (username,)
+        )
+        user = cur.fetchone()
+        cur.close()
+        
+        if user:
+            print(f"🎪 User found in database: {username}")
+            # Verificar contraseña
+            if bcrypt.checkpw(password.encode('utf-8'), user[2].encode('utf-8')):
+                print(f"✅ Authentication successful for: {username}")
+                # Autenticación exitosa
                 session['user_id'] = user[0]
                 session['username'] = user[1]
-                session['is_admin'] = user[2]
+                session['is_admin'] = user[3]
+                
+                # Redirigir según permisos
+                if session.get('is_admin'):
+                    return redirect(url_for('admin.manage_users'))
+                else:
+                    return redirect(url_for('user.user_dashboard'))
             else:
-                # Usuario LDAP normal - sin permisos especiales
-                session['user_id'] = None  # No tiene ID en la base de datos
-                session['username'] = username
-                session['is_admin'] = False
-            
-            cur.close()
-            
-            # Redirigir según el tipo de usuario
-            if session.get('is_admin'):
-                return redirect(url_for('admin'))
-            else:
-                return redirect(url_for('user.user_dashboard'))
+                print(f"❌ Authentication failed for: {username}")
+                flash('Invalid password', 'error')
+                return redirect(url_for('login'))
         else:
-            flash('Invalid LDAP credentials', 'error')
+            print(f"❌ User not found: {username}")
+            flash('Invalid username', 'error')
             return redirect(url_for('login'))
 
     return render_template('login.html')
-
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        try:
-            db = get_db()
-            cur = db.cursor()
-            username = request.form['username']
-            password = request.form['password']
-            email = request.form['email']
-
-            # Check if the username already exists
-            cur.execute('SELECT * FROM users WHERE username = %s',
-                        (username, ))
-            existing_user = cur.fetchone()
-            if existing_user:
-                flash('Username already taken', 'error')
-                return redirect(url_for('register'))
-
-            # Check if the email already exists
-            cur.execute('SELECT * FROM users WHERE email = %s', (email, ))
-            existing_email = cur.fetchone()
-            if existing_email:
-                flash('Email already registered', 'error')
-                return redirect(url_for('register'))
-
-            # Hash the password
-            hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-
-            cur.execute(
-                'INSERT INTO users (username, password, email, is_admin) VALUES (%s, %s, %s, %s)',
-                (username, hashed_password, email, False))
-            db.commit()
-            cur.close()
-            flash('Registration successful', 'success')
-            return redirect(url_for('login'))
-        except Exception as e:
-            db.rollback()
-            print("Error: ", str(e))
-            flash('Registration failed', 'error')
-            return redirect(url_for('register'))
-    return render_template('register.html')
 
 @app.route('/logout')
 def logout():

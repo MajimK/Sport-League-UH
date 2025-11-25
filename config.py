@@ -9,10 +9,6 @@ class Config:
     DATABASE_URL = os.getenv('DATABASE_URL')
     FOOTBALL_DATA_API_KEY = os.getenv('FOOTBALL_DATA_API_KEY')
 
-# ldap_config.py
-import ldap3
-from config import Config
-
 class LDAPConfig:
     LDAP_SERVER = '10.6.240.65'
     LDAP_ADMIN = 'cn=admin,dc=uh,dc=cu'
