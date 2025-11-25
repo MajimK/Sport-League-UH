@@ -3,6 +3,7 @@ from db import get_db, close_db
 from admin_routes import admin_bp
 from user_routes import user_bp
 from config import Config
+from services.ldap_verification import check_ldap
 import bcrypt
 
 app = Flask(__name__) 
@@ -34,26 +35,47 @@ def home():
             return redirect(url_for('user'))
     else:
         return redirect(url_for('login'))
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        db = get_db()
-        cur = db.cursor()
         username = request.form['username']
         password = request.form['password']
-        cur.execute(
-            'SELECT user_id, username, password, is_admin FROM users WHERE username = %s',
-            (username, ))
-        user = cur.fetchone()
-        cur.close()
-        if user and bcrypt.checkpw(password.encode('utf-8'), user[2].encode('utf-8')):
-            session['user_id'] = user[0]
-            session['username'] = user[1]
-            session['is_admin'] = user[3]
-            return redirect(url_for('home'))
+        
+        # Autenticar contra LDAP
+        _, ldap_user = check_ldap(username, password)
+        print(ldap_user)
+        print(_)
+        if ldap_user:
+            db = get_db()
+            cur = db.cursor()
+            
+            # Verificar si el usuario existe en la base de datos (solo usuarios con permisos especiales)
+            cur.execute(
+                'SELECT user_id, username, is_admin FROM users WHERE username = %s',
+                (username,)
+            )
+            user = cur.fetchone()
+            
+            if user:
+                # Usuario con permisos especiales - usar permisos de la base de datos
+                session['user_id'] = user[0]
+                session['username'] = user[1]
+                session['is_admin'] = user[2]
+            else:
+                # Usuario LDAP normal - sin permisos especiales
+                session['user_id'] = None  # No tiene ID en la base de datos
+                session['username'] = username
+                session['is_admin'] = False
+            
+            cur.close()
+            
+            # Redirigir según el tipo de usuario
+            if session.get('is_admin'):
+                return redirect(url_for('admin'))
+            else:
+                return redirect(url_for('user.user_dashboard'))
         else:
-            flash('Invalid username or password', 'error')
+            flash('Invalid LDAP credentials', 'error')
             return redirect(url_for('login'))
 
     return render_template('login.html')
