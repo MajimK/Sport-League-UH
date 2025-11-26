@@ -3,23 +3,13 @@ from functools import wraps
 from db import get_db
 
 user_bp = Blueprint('user', __name__)
-
-def login_required(f):
-    @wraps(f)
-    def wrap(*args, **kwargs):
-        if 'user_id' not in session:
-            flash('You need to be logged in to access this page', 'error')
-            return redirect(url_for('login'))
-        return f(*args, **kwargs)
-    return wrap
-
 @user_bp.route('/user')
-@login_required
+
 def user_dashboard():
     return render_template('user_dashboard.html')
 
 @user_bp.route('/user/teams')
-@login_required
+
 def user_teams():
     db = get_db()
     cur = db.cursor()
@@ -67,7 +57,7 @@ def user_teams():
     return render_template('user_teams.html', teams=teams, page=request.args.get('page', 1, type=int), total_pages=total_pages, leagues=leagues, countries=countries, max=max, min=min, str=str)
 
 @user_bp.route('/user/players')
-@login_required
+
 def user_players():
     db = get_db()
     cur = db.cursor()
@@ -137,7 +127,7 @@ def user_players():
 
 
 @user_bp.route('/user/leagues')
-@login_required
+
 def user_leagues():
     db = get_db()
     cur = db.cursor()
@@ -152,7 +142,7 @@ def user_leagues():
     return render_template('user_leagues.html', leagues=leagues)
     
 @user_bp.route('/user/matches')
-@login_required
+
 def user_matches():
     db = get_db()
     cur = db.cursor()
@@ -221,7 +211,7 @@ def user_matches():
 
 
 @user_bp.route('/team/<int:team_id>')
-@login_required
+
 def profile_team(team_id):
     db = get_db()
     cur = db.cursor()
@@ -284,7 +274,7 @@ def profile_team(team_id):
 
 
 @user_bp.route('/player/<int:player_id>')
-@login_required
+
 def profile_player(player_id):
     db = get_db()
     cur = db.cursor()
@@ -320,7 +310,7 @@ def profile_player(player_id):
 
 
 @user_bp.route('/match/<int:match_id>')
-@login_required
+
 def profile_match(match_id):
     db = get_db()
     cur = db.cursor()
@@ -373,7 +363,7 @@ def profile_match(match_id):
 
 
 @user_bp.route('/league/<int:league_id>')
-@login_required
+
 def profile_league(league_id):
     db = get_db()
     cur = db.cursor()
@@ -411,7 +401,7 @@ def profile_league(league_id):
 
 
 @user_bp.route('/user/scorers')
-@login_required
+
 def user_scorers():
     db = get_db()
     cur = db.cursor()

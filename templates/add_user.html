@@ -11,6 +11,11 @@
         background-color: #28a745;
         color: white;
     }
+
+    .badge-manager {
+        background-color: #ffc107;
+        color: black;
+    }
 </style>
 <div class="container mt-4">
     <h1 class="mb-4">Add New User</h1>
@@ -45,6 +50,14 @@
                         </label>
                     </div>
                 </div>
+                <div class="form-group">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="is_manager" name="is_manager">
+                        <label class="form-check-label" for="is_manager">
+                            Manager Privileges (can manage teams and players)
+                        </label>
+                    </div>
+                </div>
                 <button type="submit" class="btn btn-success">
                     <i class="fa fa-plus"></i> Create User
                 </button>
@@ -62,7 +75,8 @@
                         <strong>Username:</strong> Unique identifier for the user<br>
                         <strong>Email:</strong> User's email address<br>
                         <strong>Password:</strong> Secure password for local authentication<br>
-                        <strong>Admin Privileges:</strong> Grants full administrative access
+                        <strong>Admin Privileges:</strong> Grants full administrative access<br>
+                        <strong>Manager Privileges:</strong> Grants access to manage teams and players
                     </p>
                     <div class="alert alert-info">
                         <small>

@@ -11,6 +11,11 @@
         background-color: #28a745;
         color: white;
     }
+
+    .badge-manager {
+        background-color: #ffc107;
+        color: black;
+    }
 </style>
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -25,15 +30,22 @@
             <h2 id="form-title">Edit User Privileges</h2>
             <form action="{{ url_for('admin.manage_users') }}" method="POST">
                 <input type="hidden" id="user_id" name="user_id">
-                <input type="hidden" id="action" name="action" value="toggle_admin"> <!-- AÑADIR ESTE CAMPO -->
+                <input type="hidden" id="action" name="action" value="toggle_admin">
                 <div class="form-group">
-                    <label for="is_admin">Privilege:</label>
+                    <label for="is_admin">Admin Privilege:</label>
                     <select class="form-control" id="is_admin" name="is_admin" required>
-                        <option value="false">User</option>
-                        <option value="true">Admin</option>
+                        <option value="false">No</option>
+                        <option value="true">Yes</option>
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary" id="submit-button">Update Privilege</button>
+                <div class="form-group">
+                    <label for="is_manager">Manager Privilege:</label>
+                    <select class="form-control" id="is_manager" name="is_manager" required>
+                        <option value="false">No</option>
+                        <option value="true">Yes</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" id="submit-button">Update Privileges</button>
             </form>
         </div>
         <div class="col-md-6">
@@ -46,9 +58,8 @@
                             <th>ID</th>
                             <th>Username</th>
                             <th>Email</th>
-                            <th>Privilege</th>
+                            <th>Privileges</th>
                             <th>Edit</th>
-                            <th>Delete</th> <!-- AÑADIR COLUMNA DELETE -->
                         </tr>
                     </thead>
                     <tbody>
@@ -58,26 +69,21 @@
                             <td>{{ user[1] }}</td>
                             <td>{{ user[2] if user[2] else 'N/A' }}</td>
                             <td>
-                                <span class="badge {% if user[3] %}badge-admin{% else %}badge-user{% endif %}">
-                                    {% if user[3] %}Admin{% else %}User{% endif %}
-                                </span>
+                                {% if user[3] %}
+                                <span class="badge badge-admin">Admin</span>
+                                {% endif %}
+                                {% if user[4] %}
+                                <span class="badge badge-manager">Manager</span>
+                                {% endif %}
+                                {% if not user[3] and not user[4] %}
+                                <span class="badge badge-user">User</span>
+                                {% endif %}
                             </td>
                             <td>
                                 <button class="btn btn-success btn-sm"
-                                    onclick="editUser('{{ user[0] }}', '{{ user[3] }}')">
+                                    onclick="editUser('{{ user[0] }}', '{{ user[3] }}', '{{ user[4] }}')">
                                     <i class="fa fa-pencil-alt"></i>
                                 </button>
-                            </td>
-                            <td>
-                                <form action="{{ url_for('admin.manage_users') }}" method="POST"
-                                    style="display: inline;">
-                                    <input type="hidden" name="user_id" value="{{ user[0] }}">
-                                    <input type="hidden" name="action" value="delete">
-                                    <button type="submit" class="btn btn-danger btn-sm"
-                                        onclick="return confirm('Are you sure you want to delete user {{ user[1] }}?')">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </form>
                             </td>
                         </tr>
                         {% endfor %}
@@ -94,11 +100,12 @@
 </div>
 
 <script>
-    function editUser(id, isAdmin) {
+    function editUser(id, isAdmin, isManager) {
         document.getElementById('user_id').value = id;
         document.getElementById('is_admin').value = isAdmin ? 'true' : 'false';
-        document.getElementById('submit-button').innerText = 'Update Privilege';
-        document.getElementById('form-title').innerText = 'Edit User Privilege';
+        document.getElementById('is_manager').value = isManager ? 'true' : 'false';
+        document.getElementById('submit-button').innerText = 'Update Privileges';
+        document.getElementById('form-title').innerText = 'Edit User Privileges';
     }
 </script>
 {% endblock %}

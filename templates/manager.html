@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+{% block title %}Manager Dashboard{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Manager Dashboard</h1>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Manage Teams</h5>
+                    <p class="card-text">Add, edit, or delete teams</p>
+                    <a href="{{ url_for('admin.manage_teams') }}" class="btn btn-light">Go to Teams</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Manage Players</h5>
+                    <p class="card-text">Add, edit, or delete players</p>
+                    <a href="{{ url_for('admin.manage_players') }}" class="btn btn-light">Go to Players</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-warning mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Manage Matches</h5>
+                    <p class="card-text">Add, edit, or delete matches</p>
+                    <a href="{{ url_for('admin.manage_matches') }}" class="btn btn-light">Go to Matches</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

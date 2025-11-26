@@ -49,7 +49,7 @@ def login():
         
         # Buscar usuario en la base de datos
         cur.execute(
-            'SELECT user_id, username, password, is_admin FROM users WHERE username = %s',
+            'SELECT user_id, username, password, is_admin, is_manager FROM users WHERE username = %s',
             (username,)
         )
         user = cur.fetchone()
@@ -64,10 +64,15 @@ def login():
                 session['user_id'] = user[0]
                 session['username'] = user[1]
                 session['is_admin'] = user[3]
+                session['is_manager'] = user[4]  # Nuevo campo de manager
+                
+                print(f"🎭 User roles - Admin: {user[3]}, Manager: {user[4]}")
                 
                 # Redirigir según permisos
                 if session.get('is_admin'):
-                    return redirect(url_for('admin.manage_users'))
+                    return redirect(url_for('admin'))
+                elif session.get('is_manager'):
+                    return redirect(url_for('manager'))  # O donde quieras que vayan los managers
                 else:
                     return redirect(url_for('user.user_dashboard'))
             else:
@@ -80,6 +85,13 @@ def login():
             return redirect(url_for('login'))
 
     return render_template('login.html')
+
+# Nueva ruta para el dashboard de manager
+@app.route('/manager')
+def manager():
+    if 'user_id' not in session or not session.get('is_manager'):
+        return redirect(url_for('login'))
+    return render_template('manager.html')
 
 @app.route('/logout')
 def logout():

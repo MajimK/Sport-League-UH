@@ -6,6 +6,15 @@ from db import get_db
 
 admin_bp = Blueprint('admin', __name__)
 
+def manager_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'username' not in session or session.get('role') not in ['manager', 'admin']:
+            flash('You need manager privileges to access this page', 'error')
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return wrap
+
 def admin_required(f):
     @wraps(f)
     def wrap(*args, **kwargs):
@@ -14,6 +23,16 @@ def admin_required(f):
             return redirect(url_for('login'))
         return f(*args, **kwargs)
     return wrap
+
+def admin_or_manager_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'user_id' not in session or (not session.get('is_admin') and not session.get('is_manager')):
+            flash('You need admin or manager privileges to access this page', 'error')
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return wrap
+
 
 def get_existing_data(table_name):
     db = get_db()
@@ -138,7 +157,7 @@ def manage_seasons():
     return render_template('manage_seasons.html', seasons=seasons, leagues=leagues)
 
 @admin_bp.route('/manage_teams', methods=['GET', 'POST'])
-@admin_required
+@admin_or_manager_required
 def manage_teams():
     db = get_db()
     cur = db.cursor()
@@ -230,7 +249,7 @@ def manage_coaches():
 
 
 @admin_bp.route('/manage_players', methods=['GET', 'POST'])
-@admin_required
+@admin_or_manager_required
 def manage_players():
     db = get_db()
     cur = db.cursor()
@@ -276,7 +295,7 @@ def manage_players():
 
 
 @admin_bp.route('/manage_matches', methods=['GET', 'POST'])
-@admin_required
+@admin_or_manager_required
 def manage_matches():
     db = get_db()
     cur = db.cursor()
