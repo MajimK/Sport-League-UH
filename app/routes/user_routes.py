@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, session, url_for, flash
 from functools import wraps
-from db import get_db
+from app.database.db import get_db
 
 user_bp = Blueprint('user', __name__)
 @user_bp.route('/user')
