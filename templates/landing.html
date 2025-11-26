@@ -1,17 +1,42 @@
 <!DOCTYPE html>
 <html lang="es">
 <style>
+
+    @font-face {
+        font-family: 'Jost';
+        src: url('{{ url_for("static", filename="fonts/Jost-VariableFont_wght.ttf") }}') format('truetype');
+        font-weight: 100 900;
+        font-style: normal;
+        font-display: swap;
+    }
+
+    @font-face {
+        font-family: 'Inter';
+        src: url('{{ url_for("static", filename="fonts/Inter-VariableFont_opsz,wght.ttf") }}') format('truetype');
+        font-weight: 100 900;
+        font-style: normal;
+        font-display: swap;
+    }
+
+    @font-face {
+        font-family: 'Merriweather';
+        src: url('{{ url_for("static", filename="fonts/Merriweather-VariableFont_opsz,wdth,wght") }}') format('truetype');
+        font-weight: 100 900;
+        font-style: normal;
+        font-display: swap;
+    }
+
     /* Variables y Reset Básico */
     :root {
-        --color-uh-blue: #003366;
+        --color-uh-red: #6D222E;
         /* Azul Oscuro de la UH */
-        --color-uh-gold: #ffcc00;
+        --color-uh-gold: #D4AF37;
         /* Dorado */
         --color-red: #cc0000;
         --color-green: #28a745;
-        --color-blue: #007bff;
+        --color-blue: #6D222E;
         --color-dark: #343a40;
-        --font-primary: 'Roboto', sans-serif;
+        --font-primary: 'Jost', sans-serif;
     }
 
     * {
@@ -37,7 +62,7 @@
     h2,
     h3 {
         margin-bottom: 0.5em;
-        color: var(--color-uh-blue);
+        color: var(--color-uh-red);
     }
 
     /* --- Botones Genéricos --- */
@@ -104,6 +129,7 @@
     }
 
     .logo-uh {
+        align-items: center;
         height: 50px;
         /* Ajusta el tamaño del logo */
         margin-right: 15px;
@@ -112,7 +138,7 @@
     .site-title {
         font-size: 1.5rem;
         font-weight: 700;
-        color: var(--color-uh-blue);
+        color: var(--color-uh-red);
     }
 
     .uh {
@@ -120,7 +146,7 @@
     }
 
     .main-nav {
-        background-color: var(--color-uh-blue);
+        background-color: var(--color-uh-red);
     }
 
     .main-nav ul {
@@ -140,15 +166,15 @@
     }
 
     .main-nav a:hover {
-        background-color: #004d99;
+        background-color: var(--color-uh-gold);
         /* Azul más oscuro al pasar el ratón */
     }
 
 
     /* --- 2. Hero Banner --- */
+    /* --- 2. Hero Banner --- */
     .hero-banner {
-        background: url('hero-bg.jpg') no-repeat center center/cover;
-        /* Usar una imagen real */
+        background: url('{{ url_for("static", filename="images/banner_bg.jpg") }}') no-repeat center center/cover;
         height: 400px;
         display: flex;
         align-items: center;
@@ -181,18 +207,8 @@
         margin-bottom: 10px;
         color: white;
     }
-
-    .countdown {
-        margin-top: 15px;
-        font-size: 1.5rem;
-        font-weight: 700;
-        background-color: rgba(0, 0, 0, 0.5);
-        padding: 5px 10px;
-        display: inline-block;
-        border-radius: 5px;
-    }
-
-    /* --- 3. Bloque de Noticias --- */
+    
+   /* --- 3. Bloque de Noticias --- */
     .news-block {
         padding: 40px 0;
         text-align: center;
@@ -211,6 +227,9 @@
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         overflow: hidden;
         text-align: left;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
     }
 
     .news-img {
@@ -218,28 +237,37 @@
         background-color: #eee;
         background-size: cover;
         background-position: center;
+        flex-shrink: 0;
     }
 
     .news-card h3 {
         padding: 15px 15px 0;
         font-size: 1.2rem;
+        flex-shrink: 0;
     }
 
     .news-card p {
         padding: 0 15px 10px;
         font-size: 0.9rem;
         color: #666;
+        flex-grow: 1;
     }
 
     .news-card a {
         display: block;
-        padding: 10px 15px;
-        background-color: var(--color-uh-blue);
+        padding: 12px 15px;
+        background-color: var(--color-uh-red);
         color: white;
         text-align: center;
         text-decoration: none;
         font-size: 0.9rem;
+        margin-top: auto;
+        flex-shrink: 0;
     }
+
+    .news-card a:hover {
+        background-color: var(--color-uh-gold);
+}
 
     /* --- 4. Live Scores (Ticker) --- */
     .live-scores {
@@ -290,7 +318,7 @@
 
     .event-card .sport {
         font-weight: 700;
-        color: var(--color-uh-blue);
+        color: var(--color-uh-red);
         display: block;
         margin-bottom: 5px;
     }
@@ -318,7 +346,7 @@
 
     /* --- 10. Footer --- */
     .main-footer {
-        background-color: var(--color-uh-blue);
+        background-color: var(--color-uh-red);
         color: white;
         padding: 30px 0 10px;
     }
@@ -404,13 +432,8 @@
     <header class="main-header">
         <div class="header-top">
             <div class="logos">
-                <img src="logo-uh.png" alt="Logo UH" class="logo-uh">
+                <!-- <img src="{{ url_for('static', filename='images/logo-negro.png') }}" alt="Logo UH" class="logo-uh"> -->
                 <span class="site-title">DEPORTE <span class="uh">UH</span></span>
-            </div>
-            <div class="quick-buttons">
-                <a href="#resultados" class="btn btn-red">Resultados</a>
-                <a href="#calendario" class="btn btn-blue">Calendario</a>
-                <a href="#inscripciones" class="btn btn-green">Inscripciones</a>
             </div>
         </div>
 
@@ -428,7 +451,7 @@
                 <li><a href="#calendario">Calendario</a></li>
                 <li><a href="#multimedia">Multimedia</a></li>
                 <li><a href="#nosotros">Nosotros</a></li>
-                <li><a href="#contacto">Contacto</a></li>
+                <li><a href="#nosotros">Historia</a></li>
             </ul>
         </nav>
     </header>
@@ -436,46 +459,45 @@
     <main>
         <section class="hero-banner">
             <div class="hero-content">
-                <h1>Juegos Caribe 2025 – En Vivo</h1>
-                <p>El evento más esperado del deporte universitario.</p>
-                <div class="hero-actions">
-                    <a href="#" class="btn btn-dark">Ver calendario</a>
-                    <a href="#" class="btn btn-dark-outline">Últimos resultados</a>
-                </div>
-                <div class="countdown">05:15:27:59</div>
+                <h1>Movimiento Deportivo Universitario</h1>
+                <!-- <p>El evento más esperado del deporte universitario.</p> -->
             </div>
         </section>
 
         <section class="news-block container">
-            <h2>Bloque de Noticias Principales</h2>
+            <h2>Noticias Universitarias</h2>
             <div class="news-grid">
-                <article class="news-card featured">
-                    <div class="news-img" style="background-image: url('placeholder1.jpg');"></div>
-                    <h3>La Facultad de Matemática lidera el medallero 2025</h3>
-                    <p>Con una actuación histórica en Judo y Ajedrez, la FMAT se consolida en la cima.</p>
-                    <a href="#">Leer más</a>
-                </article>
-                <article class="news-card">
-                    <div class="news-img" style="background-image: url('placeholder2.jpg');"></div>
-                    <h3>Calendario actualizado del Voleibol Interfacultades</h3>
-                    <p>Consulte las nuevas sedes y horarios tras las lluvias de la semana pasada.</p>
-                    <a href="#">Leer más</a>
-                </article>
-                <article class="news-card">
-                    <div class="news-img" style="background-image: url('placeholder3.jpg');"></div>
-                    <h3>Así se vivió la inauguración de los Juegos Caribe</h3>
-                    <p>Una noche llena de música, color y el espíritu de la comunidad universitaria.</p>
-                    <a href="#">Leer más</a>
-                </article>
-            </div>
+            {% set tenis_img = url_for('static', filename='images/tenis.jpg') %}
+            {% set ajedrez_img = url_for('static', filename='images/ajedrez.jpg') %}
+            {% set confin_img = url_for('static', filename='images/confin.jpg') %}
+            
+            <article class="news-card featured">
+                <div class="news-img" style="background-image: url('{{ tenis_img }}');"></div>
+                <h3>🎾 Torneo Interfacultades de Tenis 2024</h3>
+                <p>La Facultad de Contabilidad lidera el cuadro de honor tras imponerse en dobles mixtos. Inscripciones abiertas hasta el 15 de diciembre.</p>
+                <a href="#">Ver detalles del torneo</a>
+            </article>
+            <article class="news-card">
+                <div class="news-img" style="background-image: url('{{ ajedrez_img }}');"></div>
+                <h3>♟️ Campeonato de Ajedrez Rápido</h3>
+                <p>Estudiantes de Contabilidad demuestran habilidades estratégicas en el torneo interdepartamental. Gran maestro internacional como invitado especial.</p>
+                <a href="#">Ver resultados</a>
+            </article>
+            <article class="news-card">
+                <div class="news-img" style="background-image: url('{{ confin_img }}');"></div>
+                <h3>📊 Feria de Prácticas en Contabilidad</h3>
+                <p>Las Big Four visitan la facultad para reclutar talento. Talleres sobre nuevas normas IFRS y oportunidades de certificación CPA.</p>
+                <a href="#">Conocer más</a>
+            </article>
+        </div>
         </section>
 
         <section class="live-scores">
             <div class="ticker container">
-                <span><i class="fas fa-basketball-ball"></i> Baloncesto: Economía 54 – 47 Derecho</span>
-                <span><i class="fas fa-futbol"></i> Fútbol: FCOM 1 – 1 Biología</span>
-                <span><i class="fas fa-medal"></i> Medallero: 1.º Matemática | 2.º Física | 3.º Economía</span>
-                <a href="#resultados" class="btn-ticker">Ver todos resultados</a>
+                <span><i class="fas fa-tennis-ball"></i> Tenis: Contabilidad 3 - 2 Economía</span>
+                <span><i class="fas fa-chess"></i> Ajedrez: F. Contabilidad vs Matemática (En juego)</span>
+                <span><i class="fas fa-medal"></i> Medallero: 1.º Contabilidad | 2.º Matemática | 3.º Economía</span>
+                <a href="#resultados" class="btn-ticker">Ver todos los resultados</a>
             </div>
         </section>
 
