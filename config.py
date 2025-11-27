@@ -1,6 +1,8 @@
 import os
 from enum import Enum
 from dotenv import load_dotenv
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
 
 load_dotenv()
 
@@ -20,3 +22,15 @@ class Query(str, Enum):
     ERROR_NOT_FOUND = "ERROR_NO_ENCONTRADO"
     ERROR_PASSWORD = "ERROR_CONTRASEÑA"
     ERROR_SERVICE = "ERROR_SERVICIO"
+
+class Settings(BaseSettings):
+    APP_NAME: str = "Sport League UH"
+    ALLOWED_ORIGINS: list[str] = ["*"]  # Cambia luego para producción
+    DATABASE_URL: str = "postgresql+psycopg://user:password@db:5432/sportdb"
+    SECRET_KEY: str = os.getenv("SECRET_KEY", "supersecretkey")
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
+    REFRESH_TOKEN_EXPIRE_DAYS: int = 30
+    model_config = SettingsConfigDict(extra='ignore')
+
+settings = Settings()
