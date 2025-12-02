@@ -1,16 +1,14 @@
-from flask import Blueprint
-from app.database.db import get_db
+from fastapi import APIRouter
+from .admin.teams import router as teams_router
+from .admin.players import router as players_router
+# from .tournaments import router as tournaments_router
+# from .matches import router as matches_router
+# from .results import router as results_router
 
-admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
+admin_router = APIRouter(tags=["admin"])
 
-
-def get_existing_data(table_name):
-    db = get_db()
-    cur = db.cursor()
-    cur.execute(f'SELECT * FROM {table_name}')
-    data = cur.fetchall()
-    cur.close()
-    return data
-
-
-
+admin_router.include_router(teams_router)
+admin_router.include_router(players_router)
+# admin_router.include_router(tournaments_router)
+# admin_router.include_router(matches_router)
+# admin_router.include_router(results_router)

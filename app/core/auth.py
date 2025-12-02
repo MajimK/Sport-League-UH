@@ -9,7 +9,6 @@ from app.database.models.users import Users
 from typing import Optional
 import time
 
-# Solo pbkdf2_sha256, sin bcrypt
 pwd_context = CryptContext(
     schemes=["pbkdf2_sha256"],
     deprecated="auto"
