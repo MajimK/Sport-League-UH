@@ -28,7 +28,7 @@ export default function RootLayout({
           </div>
           <nav className="main-nav">
             <ul>
-              <li><a href="#">Inicio</a></li>
+              <li><a href="/">Inicio</a></li>
               <li><a href="#noticias">Noticias</a></li>
               <li><a href="#eventos">Eventos Deportivos</a></li>
               <li><a href="#deportes">Deportes</a></li>
@@ -37,6 +37,9 @@ export default function RootLayout({
               <li><a href="#multimedia">Multimedia</a></li>
               <li><a href="#nosotros">Nosotros</a></li>
               <li><a href="#historia">Historia</a></li>
+              <li><a href="/login">
+                <i className="fas fa-sign-in-alt"></i> Login
+              </a></li>
             </ul>
           </nav>
         </header>
