@@ -158,3 +158,60 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
+
+# ============ NODE/NEXT.JS ============
+node_modules/
+.npm
+.pnpm
+.pnpm-store/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Next.js
+.next/
+.next/cache/
+out/
+
+# TypeScript
+*.tsbuildinfo
+
+# Paquetes descargados
+packages/*.tgz
+
+# ============ FRONTEND SUBDIRECTORIO ============
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+
+# ============ PYTHON/FLASK ============
+__pycache__/
+*.py[cod]
+env/
+venv/
+.venv/
+
+# Entorno
+.env
+.env.local
+
+# ============ SISTEMA/IDE ============
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+@'
+
+# Paquetes descargados manualmente
+packages/*.tgz
+frontend/packages/*.tgz
+
+# Elige UNA ubicación para assets:
+# Si mantienes en frontend/ → ignora static/
+static/images/
+static/fonts/
+# Si mantienes en static/ → ignora frontend/public/static/
+frontend/public/static/images/
+frontend/public/static/fonts/
+'@ | Add-Content -Path ".gitignore" -Encoding UTF8
