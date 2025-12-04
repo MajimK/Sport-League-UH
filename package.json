@@ -1,0 +1,22 @@
+{
+  "name": "sports-league-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "14.0.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-transition-group": "^4.4.5",
+    "typescript": "file:frontend/packages/typescript-5.2.2.tgz"
+  },
+  "devDependencies": {
+    "@types/node": "file:frontend/packages/node-20.9.0.tgz",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3"
+  }
+}
