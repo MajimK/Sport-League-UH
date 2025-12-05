@@ -26,12 +26,12 @@ export default function ManageTeamsPage() {
       const headers: HeadersInit = {
         'Content-Type': 'application/json',
       };
-      
+
       if (authToken) {
         headers['Authorization'] = `Bearer ${authToken}`;
       }
 
-      const response = await fetch('http://localhost:5000/admin/teams/', {
+      const response = await fetch('http://localhost:8000/admin/teams/', {
         headers,
         credentials: 'include'
       });
@@ -58,13 +58,13 @@ export default function ManageTeamsPage() {
       <h1 className="mb-4">Manage Teams</h1>
       <div className="row">
         <div className="col-md-6">
-          <TeamForm 
+          <TeamForm
             token={token}
             onSuccess={handleRefresh}
           />
         </div>
         <div className="col-md-6">
-          <TeamsTable 
+          <TeamsTable
             teams={teams}
             token={token}
             onSuccess={handleRefresh}

@@ -25,12 +25,12 @@ export default function PlayerForm({ token, onSuccess }: PlayerFormProps) {
       const headers: HeadersInit = {
         'Content-Type': 'application/json',
       };
-      
+
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
       }
 
-      const response = await fetch('http://localhost:5000/admin/players/', {
+      const response = await fetch('http://localhost:8000/admin/players/', {
         method: 'POST',
         headers,
         body: JSON.stringify(formData),
@@ -48,7 +48,7 @@ export default function PlayerForm({ token, onSuccess }: PlayerFormProps) {
         name: '',
         faculty: ''
       });
-      
+
       onSuccess();
     } catch (err) {
       setError('Error creating player');
@@ -62,7 +62,7 @@ export default function PlayerForm({ token, onSuccess }: PlayerFormProps) {
     <div className="card">
       <div className="card-body">
         <h2 className="card-title">Add Player</h2>
-        
+
         {error && <div className="alert alert-danger">{error}</div>}
 
         <form onSubmit={handleSubmit}>
@@ -73,7 +73,7 @@ export default function PlayerForm({ token, onSuccess }: PlayerFormProps) {
               id="CI"
               className="form-control"
               value={formData.CI}
-              onChange={(e) => setFormData({...formData, CI: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, CI: e.target.value })}
               required
               disabled={loading}
               placeholder="Enter CI number"
@@ -87,7 +87,7 @@ export default function PlayerForm({ token, onSuccess }: PlayerFormProps) {
               id="name"
               className="form-control"
               value={formData.name}
-              onChange={(e) => setFormData({...formData, name: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               required
               disabled={loading}
               placeholder="Enter full name"
@@ -101,15 +101,15 @@ export default function PlayerForm({ token, onSuccess }: PlayerFormProps) {
               id="faculty"
               className="form-control"
               value={formData.faculty}
-              onChange={(e) => setFormData({...formData, faculty: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, faculty: e.target.value })}
               required
               disabled={loading}
               placeholder="Enter faculty name"
             />
           </div>
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="btn btn-primary"
             disabled={loading}
           >

@@ -24,12 +24,12 @@ export default function TeamForm({ token, onSuccess }: TeamFormProps) {
       const headers: HeadersInit = {
         'Content-Type': 'application/json',
       };
-      
+
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
       }
 
-      const response = await fetch('http://localhost:5000/admin/teams/', {
+      const response = await fetch('http://localhost:8000/admin/teams/', {
         method: 'POST',
         headers,
         body: JSON.stringify(formData),
@@ -46,7 +46,7 @@ export default function TeamForm({ token, onSuccess }: TeamFormProps) {
         name: '',
         description: ''
       });
-      
+
       onSuccess();
     } catch (err) {
       setError('Error creating team');
@@ -60,7 +60,7 @@ export default function TeamForm({ token, onSuccess }: TeamFormProps) {
     <div className="card">
       <div className="card-body">
         <h2 className="card-title">Add Team</h2>
-        
+
         {error && <div className="alert alert-danger">{error}</div>}
 
         <form onSubmit={handleSubmit}>
@@ -71,7 +71,7 @@ export default function TeamForm({ token, onSuccess }: TeamFormProps) {
               id="name"
               className="form-control"
               value={formData.name}
-              onChange={(e) => setFormData({...formData, name: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               required
               disabled={loading}
               placeholder="Enter team name"
@@ -84,7 +84,7 @@ export default function TeamForm({ token, onSuccess }: TeamFormProps) {
               id="description"
               className="form-control"
               value={formData.description}
-              onChange={(e) => setFormData({...formData, description: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               required
               disabled={loading}
               placeholder="Enter team description"
@@ -92,8 +92,8 @@ export default function TeamForm({ token, onSuccess }: TeamFormProps) {
             />
           </div>
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="btn btn-primary"
             disabled={loading}
           >

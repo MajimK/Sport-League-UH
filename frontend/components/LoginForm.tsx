@@ -17,7 +17,7 @@ export default function LoginForm() {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/login', {
+      const response = await fetch('http://localhost:8000/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
@@ -27,22 +27,36 @@ export default function LoginForm() {
       const data = await response.json();
 
       if (response.ok) {
+        const token = data.access_token;
+
+        // Guardar token (localStorage, context, etc.)
+        localStorage.setItem('token', token);
+
+        // Decodificar el payload del JWT
+        const payload = JSON.parse(atob(token.split('.')[1]));
+
+        // Extraer el rol desde el token
+        const role = payload.role;
+
         // Redirigir según rol
-        if (data.is_admin) {
+        if (role === true) {
           router.push('/admin');
-        } else if (data.is_manager) {
+        } else if (role === 'manager') {
           router.push('/manager');
         } else {
           router.push('/user/dashboard');
         }
+
       } else {
         setError(data.error || 'Login failed');
       }
+
     } catch (err) {
       setError('Connection error');
     } finally {
       setLoading(false);
     }
+
   };
 
   return (
@@ -86,9 +100,9 @@ export default function LoginForm() {
             >
               {showPassword ? (
                 <i className="fas fa-eye-slash"></i>
-                ) : (
+              ) : (
                 <i className="fas fa-eye"></i>
-                )}
+              )}
             </button>
           </div>
         </div>
@@ -99,8 +113,8 @@ export default function LoginForm() {
           </div>
         )}
 
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           className="btn-login"
           disabled={loading}
         >

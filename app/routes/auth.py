@@ -11,10 +11,6 @@ router = APIRouter(tags=["Auth"])
 @router.post("/login", response_model=TokenResponse)
 def login(data: LoginRequest, session: Session = Depends(get_session)):
     user = get_user_by_username(data.username, session)
-    print(data.password)
-    if user:
-        print(user.password)
-
     if not user or not verify_password(data.password, user.password):
         raise HTTPException(status_code=401, detail="Incorrect username or password")
 

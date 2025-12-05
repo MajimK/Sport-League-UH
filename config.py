@@ -25,7 +25,7 @@ class Query(str, Enum):
 
 class Settings(BaseSettings):
     APP_NAME: str = "Sport League UH"
-    ALLOWED_ORIGINS: list[str] = ["*"]  # Cambia luego para producción
+    ALLOWED_ORIGINS: list[str] = ["http://localhost:3000", "http://frontend:3000"]     # cuando esté dentro de Docker
     DATABASE_URL: str = "postgresql+psycopg://user:password@db:5432/sportdb"
     SECRET_KEY: str = os.getenv("SECRET_KEY", "supersecretkey")
     ALGORITHM: str = "HS256"

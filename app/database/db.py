@@ -3,6 +3,7 @@ from config import Config
 from sqlalchemy import text
 from sqlmodel import Session, select
 from app.database.models.games import Games, League_games
+from app.database.models.users import Users
 from app.database.models.leagues import Leagues
 from app.database.models.seasons import Season
 from app.database.models.teams import Team
@@ -58,6 +59,9 @@ def seed_data():
         # -------------------------
         # 1) Crear Deportes (Games)
         # -------------------------
+        user = Users(username= "root", password="$pbkdf2-sha256$29000$AUCodU4pZcyZMwZAyJnzPg$4FHcWRF6Mmyf6tFLTeL7nOsxLOMG7WXCCwpYh8XoHw8",
+                     email= "root@rect.uh.cu", is_admin=True)
+        session.add(user)
         games_list = [
             Games(name="Fútbol"),
             Games(name="Baloncesto"),

@@ -14,5 +14,4 @@ class Users(SQLModel, table=True):
     password: str
     email: str
     is_admin: bool
-    is_manager: bool
     # role: UserRole = Field(default=UserRole.manager)

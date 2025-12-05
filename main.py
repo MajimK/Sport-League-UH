@@ -1,11 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from config import settings
-from app.database.db import init_db,reset_db
+from app.database.db import reset_db
 from app.database.db import seed_data
-from fastapi import APIRouter, Depends, HTTPException, status
-from app.database.db import get_session
-from sqlmodel import Session
 # Importar routers
 from app.routes.admin_routes import admin_router
 # from app.routes.user import router as user_router

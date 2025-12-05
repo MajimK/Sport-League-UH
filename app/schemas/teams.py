@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 class TeamBase(BaseModel):
     name: str
-    description: str | None = None
+    description: str =""
 
 class TeamCreate(TeamBase):
     pass

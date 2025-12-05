@@ -28,12 +28,12 @@ export default function ManagePlayersPage() {
       const headers: HeadersInit = {
         'Content-Type': 'application/json',
       };
-      
+
       if (authToken) {
         headers['Authorization'] = `Bearer ${authToken}`;
       }
 
-      const response = await fetch('http://localhost:5000/admin/players/', {
+      const response = await fetch('http://localhost:8000/admin/players/', {
         headers,
         credentials: 'include'
       });
@@ -60,13 +60,13 @@ export default function ManagePlayersPage() {
       <h1 className="mb-4">Manage Players</h1>
       <div className="row">
         <div className="col-md-6">
-          <PlayerForm 
+          <PlayerForm
             token={token}
             onSuccess={handleRefresh}
           />
         </div>
         <div className="col-md-6">
-          <PlayersTable 
+          <PlayersTable
             players={players}
             token={token}
             onSuccess={handleRefresh}
