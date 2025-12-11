@@ -1,6 +1,7 @@
 version: '3.8'
 
 services:
+  # Flask backend
   web:
     build: .
     ports:
@@ -9,14 +10,13 @@ services:
       - .:/app
       - ./static:/app/static
       - ./templates:/app/templates
-      - ./img:/app/img
     env_file:
       - .env
     environment:
       - FLASK_APP=main.py
       - FLASK_ENV=development
-      - FLASK_DEBUG=1         # <-- Esto muestra prints en consola
-      - PYTHONUNBUFFERED=1    # <-- IMPORTANTE: Muestra prints inmediatamente
+      - FLASK_DEBUG=1
+      - PYTHONUNBUFFERED=1
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
     depends_on:
       db:
@@ -24,12 +24,12 @@ services:
     networks:
       - sports_network
 
+  # PostgreSQL
   db:
     image: postgres:16.2
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
-      - ./init-db.sh:/docker-entrypoint-initdb.d/0-init-db.sh
     env_file:
       - .env
     environment:
@@ -41,14 +41,37 @@ services:
     networks:
       - sports_network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-sports_league_owner} -d ${POSTGRES_DB:-sports_league}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-sports_league_owner}"]
       interval: 5s
       timeout: 5s
       retries: 5
+
+  # Next.js frontend (NUEVO)
+  frontend:
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: sports-frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app           # Montar código
+      - /app/node_modules         # node_modules en volumen interno
+      - /app/.next               # Cache de Next.js
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://web:5000
+      - CHOKIDAR_USEPOLLING=true  # Hot reload en Windows
+      - WATCHPACK_POLLING=true
+    depends_on:
+      - web
+    networks:
+      - sports_network
+    command: npm run dev
 
 volumes:
   postgres_data:
 
 networks:
   sports_network:
-    driver: bridge 
+    driver: bridge

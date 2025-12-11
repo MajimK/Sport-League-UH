@@ -474,3 +474,61 @@ body {
     font-size: 1.5rem;
   }
 }
+
+/* Dropdown styles */
+.dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: var(--color-uh-red);
+  min-width: 200px;
+  z-index: 1000;
+}
+
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+.dropdown-menu li {
+  width: 100%;
+}
+
+.dropdown-menu a {
+  padding: 10px 15px;
+  white-space: nowrap;
+}
+
+.dropdown-menu a:hover {
+  background-color: var(--color-uh-gold);
+}
+
+/* Logo container */
+.logos {
+  display: flex;
+  align-items: center;
+}
+
+.site-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--color-uh-red);
+}
+
+/* WhatsApp and Telegram icons */
+.fa-whatsapp {
+  color: #25D366;
+}
+
+.fa-telegram {
+  color: #0088cc;
+}
+
+.social a {
+  margin-right: 15px;
+  font-size: 1.3rem;
+}

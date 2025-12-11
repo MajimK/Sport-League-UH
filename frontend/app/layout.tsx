@@ -1,12 +1,13 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
+import Image from 'next/image'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Deporte UH | Portal Oficial de la Universidad de La Habana',
-  description: 'Movimiento Deportivo Universitario',
+  title: 'Caribe | Portal Oficial',
+  description: 'Portal deportivo universitario',
 }
 
 export default function RootLayout({
@@ -23,23 +24,38 @@ export default function RootLayout({
         <header className="main-header">
           <div className="header-top">
             <div className="logos">
-              <span className="site-title">DEPORTE <span className="uh">UH</span></span>
+              {/* Logo del indio */}
+              <div style={{ marginRight: '10px' }}>
+                <Image 
+                  src="/static/images/indio-logo.png" 
+                  alt="Logo Indio" 
+                  width={40} 
+                  height={40}
+                  style={{ objectFit: 'contain' }}
+                />
+              </div>
+              <span className="site-title">CARIBE</span>
             </div>
           </div>
           <nav className="main-nav">
             <ul>
               <li><a href="/">Inicio</a></li>
               <li><a href="#noticias">Noticias</a></li>
-              <li><a href="#eventos">Eventos Deportivos</a></li>
-              <li><a href="#deportes">Deportes</a></li>
-              <li><a href="#resultados">Resultados</a></li>
-              <li><a href="#calendario">Calendario</a></li>
-              <li><a href="#multimedia">Multimedia</a></li>
-              <li><a href="#nosotros">Nosotros</a></li>
-              <li><a href="#historia">Historia</a></li>
-              <li><a href="/login">
-                <i className="fas fa-sign-in-alt"></i> Login
-              </a></li>
+              <li className="dropdown">
+                <a href="#movimiento">Movimiento Deportivo</a>
+                <ul className="dropdown-menu">
+                  <li><a href="#deportes">Deportes</a></li>
+                  <li><a href="#resultados">Resultados</a></li>
+                  <li><a href="#calendario">Calendario</a></li>
+                </ul>
+              </li>
+              <li className="dropdown">
+                <a href="#nosotros">Nosotros</a>
+                <ul className="dropdown-menu">
+                  <li><a href="#multimedia">Multimedia</a></li>
+                  <li><a href="#historia">Historia</a></li>
+                </ul>
+              </li>
             </ul>
           </nav>
         </header>
@@ -49,13 +65,12 @@ export default function RootLayout({
             <div className="footer-column">
               <h4>Contacto</h4>
               <p>Email: deporte@uh.cu</p>
-              <p>Teléfonos: +53 7 xxx xxxx</p>
             </div>
             <div className="footer-column">
               <h4>Enlaces Rápidos</h4>
               <ul>
                 <li><a href="#">Reglamento General</a></li>
-                <li><a href="#">Archivo Histórico</a></li>
+                <li><a href="https://www.uh.cu">Universidad de La Habana</a></li>
                 <li><a href="#">Comité Organizador</a></li>
               </ul>
             </div>
@@ -63,11 +78,12 @@ export default function RootLayout({
               <h4>Síguenos</h4>
               <a href="#"><i className="fab fa-facebook-f"></i></a>
               <a href="#"><i className="fab fa-instagram"></i></a>
-              <a href="#"><i className="fab fa-youtube"></i></a>
+              <a href="#"><i className="fab fa-telegram"></i></a>
+              <a href="#"><i className="fab fa-whatsapp"></i></a>
             </div>
           </div>
           <div className="footer-bottom">
-            <p>&copy; 2025 Deporte UH. Todos los derechos reservados.</p>
+            <p>&copy; 2025 Caribe. Todos los derechos reservados.</p>
           </div>
         </footer>
       </body>
