@@ -556,3 +556,34 @@ body {
 .dropdown:not(:hover) .dropdown-content {
   display: none !important;
 }
+
+/* Estilos para página de jugadores */
+.card {
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.badge {
+  font-size: 0.75rem;
+}
+
+/* Responsive table */
+.table-responsive {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+/* Player card specific */
+.player-card .card-title {
+  color: var(--color-uh-red);
+}
+
+/* Filter styles */
+.form-control:focus {
+  border-color: var(--color-uh-red);
+  box-shadow: 0 0 0 0.2rem rgba(109, 34, 46, 0.25);
+}
