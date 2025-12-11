@@ -475,60 +475,84 @@ body {
   }
 }
 
-/* Dropdown styles */
+/* Dropdown Corrections */
 .dropdown {
   position: relative;
+  display: inline-block;
 }
 
-.dropdown-menu {
+.dropdown-toggle {
+  cursor: pointer;
+}
+
+.dropdown-toggle .fa-caret-down {
+  margin-left: 5px;
+  font-size: 0.8em;
+}
+
+.dropdown-content {
   display: none;
   position: absolute;
   top: 100%;
   left: 0;
   background-color: var(--color-uh-red);
   min-width: 200px;
+  box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
   z-index: 1000;
+  border-top: 2px solid var(--color-uh-gold);
 }
 
-.dropdown:hover .dropdown-menu {
+.dropdown-content a {
+  color: white;
+  padding: 12px 16px;
+  text-decoration: none;
   display: block;
+  text-align: left;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
-.dropdown-menu li {
-  width: 100%;
-}
-
-.dropdown-menu a {
-  padding: 10px 15px;
-  white-space: nowrap;
-}
-
-.dropdown-menu a:hover {
+.dropdown-content a:hover {
   background-color: var(--color-uh-gold);
-}
-
-/* Logo container */
-.logos {
-  display: flex;
-  align-items: center;
-}
-
-.site-title {
-  font-size: 1.8rem;
-  font-weight: 700;
   color: var(--color-uh-red);
 }
 
-/* WhatsApp and Telegram icons */
-.fa-whatsapp {
-  color: #25D366;
+.dropdown:hover .dropdown-content {
+  display: block;
 }
 
-.fa-telegram {
-  color: #0088cc;
+/* Asegurar que el hover funcione correctamente */
+.dropdown:hover > .dropdown-toggle {
+  background-color: var(--color-uh-gold);
+  color: var(--color-uh-red);
 }
 
-.social a {
-  margin-right: 15px;
-  font-size: 1.3rem;
+/* Fix para que no se muestren en fila debajo */
+.main-nav ul {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.main-nav li {
+  position: relative;
+}
+
+.main-nav > ul > li > a {
+  display: block;
+  padding: 12px 18px;
+  text-decoration: none;
+  color: white;
+}
+
+/* Remover estilos por defecto de listas dentro de dropdown */
+.dropdown-content {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Asegurar que solo se vean cuando hay hover */
+.dropdown:not(:hover) .dropdown-content {
+  display: none !important;
 }

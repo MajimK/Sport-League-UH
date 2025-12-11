@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import Image from 'next/image'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -24,37 +23,47 @@ export default function RootLayout({
         <header className="main-header">
           <div className="header-top">
             <div className="logos">
-              {/* Logo del indio */}
-              <div style={{ marginRight: '10px' }}>
-                <Image 
-                  src="/static/images/indio-logo.png" 
-                  alt="Logo Indio" 
-                  width={40} 
-                  height={40}
-                  style={{ objectFit: 'contain' }}
-                />
-              </div>
-              <span className="site-title">CARIBE</span>
-            </div>
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center',
+            gap: '10px'
+          }}>
+            {/* Logo del indio - REEMPLAZAR CON IMAGEN REAL */}
+            <img 
+              src="/static/images/indio-logo.png" 
+              alt="Logo Indio Caribe" 
+              style={{
+                width: '50px',
+                height: '50px',
+                objectFit: 'contain'
+              }}
+            />
+            <span className="site-title">CARIBE</span>
+          </div>
+        </div>
           </div>
           <nav className="main-nav">
             <ul>
               <li><a href="/">Inicio</a></li>
               <li><a href="#noticias">Noticias</a></li>
               <li className="dropdown">
-                <a href="#movimiento">Movimiento Deportivo</a>
-                <ul className="dropdown-menu">
-                  <li><a href="#deportes">Deportes</a></li>
-                  <li><a href="#resultados">Resultados</a></li>
-                  <li><a href="#calendario">Calendario</a></li>
-                </ul>
+                <a href="#movimiento" className="dropdown-toggle">
+                  Movimiento Deportivo <i className="fas fa-caret-down"></i>
+                </a>
+                <div className="dropdown-content">
+                  <a href="#deportes">Deportes</a>
+                  <a href="#resultados">Resultados</a>
+                  <a href="#calendario">Calendario</a>
+                </div>
               </li>
               <li className="dropdown">
-                <a href="#nosotros">Nosotros</a>
-                <ul className="dropdown-menu">
-                  <li><a href="#multimedia">Multimedia</a></li>
-                  <li><a href="#historia">Historia</a></li>
-                </ul>
+                <a href="#nosotros" className="dropdown-toggle">
+                  Nosotros <i className="fas fa-caret-down"></i>
+                </a>
+                <div className="dropdown-content">
+                  <a href="#multimedia">Multimedia</a>
+                  <a href="#historia">Historia</a>
+                </div>
               </li>
             </ul>
           </nav>
