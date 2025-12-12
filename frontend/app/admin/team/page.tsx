@@ -11,6 +11,7 @@ interface Team {
 }
 
 export default function ManageTeamsPage() {
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const [teams, setTeams] = useState<Team[]>([]);
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState<string | null>(null);
@@ -31,7 +32,7 @@ export default function ManageTeamsPage() {
         headers['Authorization'] = `Bearer ${authToken}`;
       }
 
-      const response = await fetch('http://localhost:8000/admin/teams/', {
+      const response = await fetch(`${API_URL}/admin/teams/`, {
         headers,
         credentials: 'include'
       });
@@ -59,7 +60,6 @@ export default function ManageTeamsPage() {
       <div className="row">
         <div className="col-md-6">
           <TeamForm
-            token={token}
             onSuccess={handleRefresh}
           />
         </div>

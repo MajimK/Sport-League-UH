@@ -62,11 +62,30 @@ def seed_data():
         user = Users(username= "root", password="$pbkdf2-sha256$29000$AUCodU4pZcyZMwZAyJnzPg$4FHcWRF6Mmyf6tFLTeL7nOsxLOMG7WXCCwpYh8XoHw8",
                      email= "root@rect.uh.cu", is_admin=True)
         session.add(user)
-        games_list = [
+
+        # Lista existente más la nueva lista de juegos solicitada
+        juegos_nuevos = [
+            "Kickingball femenino",
+            "Handball masculino",
+            "Tracción de la soga",
+            "Tragabolas",
+            "Lanzamiento de dardos",
+            "Dominó",
+            "Carrera de sacos",
+            "Anillas",
+            "Juegos mixtos"
+        ]
+
+        # Juegos originales de la semilla
+        juegos_originales = [
             Games(name="Fútbol"),
             Games(name="Baloncesto"),
             Games(name="Voleibol")
         ]
+
+        # Combinar ambas listas
+        juegos_originales.extend([Games(name=juego) for juego in juegos_nuevos])
+        games_list = juegos_originales
 
         for game in games_list:
             if not session.exec(select(Games).where(Games.name == game.name)).first():
@@ -74,12 +93,13 @@ def seed_data():
 
         session.commit()
 
+        # Obtener los deportes para usar luego (solo necesitamos los originales aquí)
         futbol = session.exec(select(Games).where(Games.name == "Fútbol")).first()
         basket = session.exec(select(Games).where(Games.name == "Baloncesto")).first()
-        voley  = session.exec(select(Games).where(Games.name == "Voleibol")).first()
+        voley = session.exec(select(Games).where(Games.name == "Voleibol")).first()
 
         # -------------------------
-        # 2) Crear Ligas
+        # 2) Crear Ligas (el resto del código original se mantiene igual)
         # -------------------------
         leagues_list = [
             Leagues(
@@ -131,7 +151,7 @@ def seed_data():
         # -------------------------
         seasons_list = [
             Season(curso="2023-2024"),
-            Season(curso="2024-2025")
+            Season(curso="2025-2026")
         ]
 
         for season in seasons_list:
@@ -140,72 +160,4 @@ def seed_data():
 
         session.commit()
 
-        # -------------------------
-        # 5) Teams
-        # -------------------------
-        teams_list = [
-            Team(name="Tigres FC", description="Equipo de fútbol", game_id=futbol.game_id),
-            Team(name="Leones BC", description="Equipo de baloncesto", game_id=basket.game_id),
-            Team(name="Panteras VB", description="Equipo de voleibol", game_id=voley.game_id),
-        ]
-
-        for team in teams_list:
-            if not session.exec(select(Team).where(Team.name == team.name)).first():
-                session.add(team)
-
-        session.commit()
-
-        tigres = session.exec(select(Team).where(Team.name == "Tigres FC")).first()
-        leones = session.exec(select(Team).where(Team.name == "Leones BC")).first()
-        panteras = session.exec(select(Team).where(Team.name == "Panteras VB")).first()
-
-        # -------------------------
-        # 6) Players
-        # -------------------------
-        players_list = [
-            Players(CI="111111", name="Carlos Torres", faculty="Informatica"),
-            Players(CI="222222", name="Luis Perez", faculty="Matematica"),
-
-            Players(CI="333333", name="Jose Diaz", faculty="Fisica"),
-            Players(CI="444444", name="Pedro Lopez", faculty="Historia"),
-
-            Players(CI="555555", name="Miguel Ruiz", faculty="Biologia"),
-            Players(CI="666666", name="Juan Gomez", faculty="Quimica"),
-        ]
-
-        for p in players_list:
-            if not session.exec(select(Players).where(Players.CI == p.CI)).first():
-                session.add(p)
-
-        session.commit()
-
-        # -------------------------
-        # 7) Assign players to teams
-        # -------------------------
-        Carlos, Luis, Jose, Pedro, Miguel, Juan = session.exec(select(Players)).all()
-
-        tp_list = [
-            Teams_Player(player_id=Carlos.player_id, team_id=tigres.team_id),
-            Teams_Player(player_id=Luis.player_id, team_id=tigres.team_id),
-
-            Teams_Player(player_id=Jose.player_id, team_id=leones.team_id),
-            Teams_Player(player_id=Pedro.player_id, team_id=leones.team_id),
-
-            Teams_Player(player_id=Miguel.player_id, team_id=panteras.team_id),
-            Teams_Player(player_id=Juan.player_id, team_id=panteras.team_id),
-        ]
-
-        for tp in tp_list:
-            exists = session.exec(
-                select(Teams_Player).where(
-                    (Teams_Player.player_id == tp.player_id) &
-                    (Teams_Player.team_id == tp.team_id)
-                )
-            ).first()
-
-            if not exists:
-                session.add(tp)
-
-        session.commit()
-
-        print("🌱 Base de datos sembrada con éxito!")
+        print("🌱 Base de datos sembrada con éxito! (incluye nuevos juegos)")

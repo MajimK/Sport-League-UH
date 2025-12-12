@@ -19,6 +19,8 @@ python-multipart
 python-dotenv
 bcrypt
 passlib
+pandas
+requests
 
 # CORS middleware (si usas frontend separado)
 starlette==0.41.0

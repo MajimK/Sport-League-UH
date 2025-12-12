@@ -12,6 +12,8 @@ interface Player {
 }
 
 export default function ManagePlayersPage() {
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
   const [players, setPlayers] = useState<Player[]>([]);
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState<string | null>(null);
@@ -33,7 +35,7 @@ export default function ManagePlayersPage() {
         headers['Authorization'] = `Bearer ${authToken}`;
       }
 
-      const response = await fetch('http://localhost:8000/admin/players/', {
+      const response = await fetch(`${API_URL}/admin/players/`, {
         headers,
         credentials: 'include'
       });

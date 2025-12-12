@@ -5,6 +5,7 @@ class TeamBase(BaseModel):
     description: str =""
 
 class TeamCreate(TeamBase):
+    game_name: str
     pass
 
 class TeamUpdate(TeamBase):
@@ -17,3 +18,11 @@ class TeamOut(TeamBase):
 
     class Config:
         from_attributes = True
+
+class TempTeam(BaseModel):
+    name: str
+    description: str
+    game_id: int
+    
+    class Config:
+        orm_mode = True

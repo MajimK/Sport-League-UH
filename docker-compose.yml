@@ -18,6 +18,12 @@ services:
       - FLASK_DEBUG=1         # <-- Esto muestra prints en consola
       - PYTHONUNBUFFERED=1    # <-- IMPORTANTE: Muestra prints inmediatamente
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+
+      - USERNAME_SIGENU=${USERNAME_SIGENU}
+      - PASSWORD_SIGENU=${PASSWORD_SIGENU}
+
+      - USER_NEXTCLOUD=${USER_NEXTCLOUD}
+      - PASS_NEXTCLOUD=${PASS_NEXTCLOUD}
     depends_on:
       db:
         condition: service_healthy

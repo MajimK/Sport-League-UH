@@ -1,8 +1,9 @@
 from sqlmodel import Session, select
 from app.database.models.teams import Team
 from app.database.models.players import Players, Teams_Player
-from app.schemas.teams import TeamCreate
+from app.schemas.teams import TeamCreate, TempTeam
 from app.schemas.utils import AddPlayersRequest
+from app.core.games import get_sport_by_name
 
 
 def get_teams_by_id(team_id: int, session: Session):
@@ -26,7 +27,19 @@ def save_team(team: TeamCreate, session: Session):
     if existing_team:
         raise ValueError("El equipo ya esta creado")
     
-    db_team = Team.from_orm(team)
+    existing_sport = get_sport_by_name(team.game_name, session)
+    if not existing_sport:
+        raise ValueError("Ese deporte no existe")
+    
+    team_with_game_id = {
+        "name": team.name,
+        "description": team.description,
+        "game_id": existing_sport.game_id
+    }
+    
+    temp_team = TempTeam(**team_with_game_id)
+    
+    db_team = Team.from_orm(temp_team)
     session.add(db_team)
     session.commit()
     session.refresh(db_team)

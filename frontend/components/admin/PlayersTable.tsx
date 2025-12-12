@@ -16,6 +16,8 @@ interface PlayersTableProps {
 }
 
 export default function PlayersTable({ players, token, onSuccess }: PlayersTableProps) {
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState('');
@@ -30,7 +32,7 @@ export default function PlayersTable({ players, token, onSuccess }: PlayersTable
       const headers: HeadersInit = {
         'Content-Type': 'application/json',
       };
-      
+
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
       }
@@ -57,9 +59,9 @@ export default function PlayersTable({ players, token, onSuccess }: PlayersTable
     <div className="card">
       <div className="card-body">
         <h2 className="card-title">Existing Players</h2>
-        
+
         {error && <div className="alert alert-danger">{error}</div>}
-        
+
         <div className="table-responsive">
           <table className="table table-striped">
             <thead>
@@ -104,13 +106,13 @@ export default function PlayersTable({ players, token, onSuccess }: PlayersTable
 
       {/* Delete Modal */}
       {deleteId && (
-        <div className="modal show d-block" tabIndex={-1} style={{backgroundColor: 'rgba(0,0,0,0.5)'}}>
+        <div className="modal show d-block" tabIndex={-1} style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">Confirm Delete</h5>
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className="btn-close"
                   onClick={() => setDeleteId(null)}
                   disabled={deleting}
@@ -120,16 +122,16 @@ export default function PlayersTable({ players, token, onSuccess }: PlayersTable
                 Are you sure you want to delete this player?
               </div>
               <div className="modal-footer">
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className="btn btn-secondary"
                   onClick={() => setDeleteId(null)}
                   disabled={deleting}
                 >
                   Cancel
                 </button>
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className="btn btn-danger"
                   onClick={handleDelete}
                   disabled={deleting}

@@ -8,6 +8,8 @@ interface PlayerFormProps {
 }
 
 export default function PlayerForm({ token, onSuccess }: PlayerFormProps) {
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
   const [formData, setFormData] = useState({
     CI: '',
     name: '',
@@ -30,7 +32,7 @@ export default function PlayerForm({ token, onSuccess }: PlayerFormProps) {
         headers['Authorization'] = `Bearer ${token}`;
       }
 
-      const response = await fetch('http://localhost:8000/admin/players/', {
+      const response = await fetch(`${API_URL}/admin/players/`, {
         method: 'POST',
         headers,
         body: JSON.stringify(formData),
