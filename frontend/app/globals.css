@@ -1,5 +1,4 @@
-/* Variables */
-:root {
+/*Variables:root {
   --color-uh-red: #6D222E;
   --color-uh-gold: #D4AF37;
   --color-red: #cc0000;
@@ -10,7 +9,6 @@
   --font-secondary: 'Inter', serif;
 }
 
-/* Reset */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -24,17 +22,15 @@ body {
   background-color: #f8f9fa;
 }
 
-/* Layout */
 .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 15px;
 }
 
-/* Header */
 .main-header {
   background-color: white;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .header-top {
@@ -80,7 +76,6 @@ body {
   background-color: var(--color-uh-gold);
 }
 
-/* Hero */
 .hero-banner {
   background: url('/static/images/banner_bg.jpg') no-repeat center center/cover;
   height: 400px;
@@ -99,7 +94,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0,0,0,0.4);
+  background: rgba(0, 0, 0, 0.4);
 }
 
 .hero-content {
@@ -112,7 +107,6 @@ body {
   margin-bottom: 10px;
 }
 
-/* News */
 .news-block {
   padding: 40px 0;
   text-align: center;
@@ -128,7 +122,7 @@ body {
 .news-card {
   background: white;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   text-align: left;
   display: flex;
@@ -171,7 +165,6 @@ body {
   background-color: var(--color-uh-gold);
 }
 
-/* Live Scores */
 .live-scores {
   background-color: var(--color-dark);
   color: white;
@@ -197,7 +190,6 @@ body {
   font-size: 0.9rem;
 }
 
-/* Events */
 .upcoming-events {
   padding-bottom: 40px;
   text-align: center;
@@ -248,7 +240,6 @@ body {
   margin-top: 20px;
 }
 
-/* Buttons */
 .btn {
   display: inline-block;
   padding: 8px 18px;
@@ -270,7 +261,6 @@ body {
   color: white;
 }
 
-/* Footer */
 .main-footer {
   background-color: var(--color-uh-red);
   color: white;
@@ -307,27 +297,25 @@ body {
   font-size: 0.8rem;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .news-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .footer-grid {
     grid-template-columns: 1fr;
     text-align: center;
   }
-  
+
   .main-nav ul {
     flex-wrap: wrap;
   }
-  
+
   .hero-content h1 {
     font-size: 2rem;
   }
 }
 
-/* Login Page */
 .login-page {
   min-height: 80vh;
   display: flex;
@@ -464,12 +452,11 @@ body {
   text-decoration: underline;
 }
 
-/* Responsive */
 @media (max-width: 480px) {
   .login-form {
     padding: 1.5rem;
   }
-  
+
   .login-header h2 {
     font-size: 1.5rem;
   }
