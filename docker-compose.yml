@@ -43,8 +43,10 @@ services:
       - sports_network
     depends_on:
       - backend
+    env_file:
+      - .env
     environment:
-    - NEXT_PUBLIC_API_URL=http://backend:8000
+    - NEXT_PUBLIC_API_URL= ${NEXT_PUBLIC_API_URL}
 
   db:
     image: postgres:16.2
