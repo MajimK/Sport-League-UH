@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import TeamForm from '@components/admin/TeamForm';
 import TeamsTable from '@components/admin/TeamsTable';
+import { Container, Row, Col, Spinner } from 'react-bootstrap';
 
 interface Team {
   team_id: number;
@@ -34,7 +35,7 @@ export default function ManageTeamsPage() {
 
       const response = await fetch(`${API_URL}/admin/teams/`, {
         headers,
-        credentials: 'include'
+        credentials: 'include',
       });
 
       if (!response.ok) throw new Error('Failed to fetch teams');
@@ -48,29 +49,36 @@ export default function ManageTeamsPage() {
     }
   };
 
-  const handleRefresh = () => {
-    fetchTeams(token);
-  };
+  const handleRefresh = () => fetchTeams(token);
 
-  if (loading) return <div className="container mt-4">Loading...</div>;
+  if (loading) {
+    return (
+      <Container className="mt-4 text-center">
+        <Spinner animation="border" variant="danger" />
+        <p className="mt-2">Loading Teams...</p>
+      </Container>
+    );
+  }
 
   return (
-    <div className="container mt-4">
-      <h1 className="mb-4">Manage Teams</h1>
-      <div className="row">
-        <div className="col-md-6">
-          <TeamForm
-            onSuccess={handleRefresh}
-          />
-        </div>
-        <div className="col-md-6">
-          <TeamsTable
-            teams={teams}
-            token={token}
-            onSuccess={handleRefresh}
-          />
-        </div>
-      </div>
-    </div>
+    <Container className="mt-4">
+
+      <h1 className="mb-4" style={{ color: 'var(--color-uh-red)' }}>
+        Manage Teams
+      </h1>
+
+      <Row className="g-4">
+
+        {/* Form for creating/editing teams */}
+        <Col md={6}>
+          <TeamForm onSuccess={handleRefresh} />
+        </Col>
+        {/* Table of existing teams */}
+        <Col md={6}>
+          <TeamsTable teams={teams} token={token} onSuccess={handleRefresh} />
+        </Col>
+
+      </Row>
+    </Container>
   );
 }

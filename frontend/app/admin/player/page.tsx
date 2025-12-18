@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import PlayerForm from '@components/admin/PlayerForm';
 import PlayersTable from '@components/admin/PlayersTable';
+import { Container, Row, Col, Spinner } from 'react-bootstrap';
 
 interface Player {
   player_id: number;
@@ -19,7 +20,6 @@ export default function ManagePlayersPage() {
   const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
-    // Obtener token del localStorage
     const storedToken = localStorage.getItem('access_token');
     setToken(storedToken);
     fetchPlayers(storedToken);
@@ -37,7 +37,7 @@ export default function ManagePlayersPage() {
 
       const response = await fetch(`${API_URL}/admin/players/`, {
         headers,
-        credentials: 'include'
+        credentials: 'include',
       });
 
       if (!response.ok) throw new Error('Failed to fetch players');
@@ -51,30 +51,37 @@ export default function ManagePlayersPage() {
     }
   };
 
-  const handleRefresh = () => {
-    fetchPlayers(token);
-  };
+  const handleRefresh = () => fetchPlayers(token);
 
-  if (loading) return <div className="container mt-4">Loading...</div>;
+  if (loading) {
+    return (
+      <Container className="mt-4 text-center">
+        <Spinner animation="border" variant="danger" />
+        <p className="mt-2">Loading Players...</p>
+      </Container>
+    );
+  }
 
   return (
-    <div className="container mt-4">
-      <h1 className="mb-4">Manage Players</h1>
-      <div className="row">
-        <div className="col-md-6">
-          <PlayerForm
-            token={token}
-            onSuccess={handleRefresh}
-          />
-        </div>
-        <div className="col-md-6">
-          <PlayersTable
-            players={players}
-            token={token}
-            onSuccess={handleRefresh}
-          />
-        </div>
-      </div>
-    </div>
+    <Container className="mt-4">
+
+      <h1 className="mb-4" style={{ color: 'var(--color-uh-red)' }}>
+        Manage Players
+      </h1>
+
+      <Row className="g-4">
+
+        {/* Form for creating/editing players */}
+        <Col md={6}>
+          <PlayerForm token={token} onSuccess={handleRefresh} />
+        </Col>
+
+        {/* Table of existing players */}
+        <Col md={6}>
+          <PlayersTable players={players} token={token} onSuccess={handleRefresh} />
+        </Col>
+
+      </Row>
+    </Container>
   );
 }

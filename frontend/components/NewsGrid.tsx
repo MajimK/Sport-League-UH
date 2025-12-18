@@ -1,3 +1,6 @@
+'use client';
+import { Card, Row, Col, Container, Button } from 'react-bootstrap';
+
 const news = [
   {
     title: "🎾 Torneo Interfacultades de Tenis 2024",
@@ -17,22 +20,26 @@ const news = [
     image: "/static/images/confin.jpg",
     link: "#"
   }
-]
+];
 
 export default function NewsGrid() {
   return (
-    <section className="news-block container">
-      <h2>Noticias Universitarias</h2>
-      <div className="news-grid">
-        {news.map((item, index) => (
-          <article key={index} className="news-card">
-            <div className="news-img" style={{backgroundImage: `url(${item.image})`}}></div>
-            <h3>{item.title}</h3>
-            <p>{item.description}</p>
-            <a href={item.link}>Ver detalles</a>
-          </article>
+    <Container className="my-5">
+      <h2 className="mb-4 text-center">Noticias Universitarias</h2>
+      <Row className="g-4">
+        {news.map((item, idx) => (
+          <Col md={4} key={idx}>
+            <Card className="h-100">
+              <Card.Img variant="top" src={item.image} />
+              <Card.Body className="d-flex flex-column">
+                <Card.Title>{item.title}</Card.Title>
+                <Card.Text className="flex-grow-1">{item.description}</Card.Text>
+                <Button href={item.link} variant="danger" className="mt-auto">Ver detalles</Button>
+              </Card.Body>
+            </Card>
+          </Col>
         ))}
-      </div>
-    </section>
-  )
+      </Row>
+    </Container>
+  );
 }

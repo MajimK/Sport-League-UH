@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Container, Row, Col, Form, Button, InputGroup, Alert } from 'react-bootstrap';
 
 export default function LoginForm() {
   const [username, setUsername] = useState('');
@@ -11,9 +12,9 @@ export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL;
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
@@ -23,110 +24,91 @@ export default function LoginForm() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
-        credentials: 'include'
+        credentials: 'include',
       });
 
       const data = await response.json();
 
       if (response.ok) {
         const token = data.access_token;
-
-        // Guardar token (localStorage, context, etc.)
         localStorage.setItem('token', token);
-
-        // Decodificar el payload del JWT
         const payload = JSON.parse(atob(token.split('.')[1]));
-
-        // Extraer el rol desde el token
         const role = payload.role;
 
-        // Redirigir según rol
-        if (role === true) {
-          router.push('/admin');
-        } else if (role === 'manager') {
-          router.push('/manager');
-        } else {
-          router.push('/user/dashboard');
-        }
-
+        if (role === true) router.push('/admin');
+        else if (role === 'manager') router.push('/manager');
+        else router.push('/user/dashboard');
       } else {
         setError(data.error || 'Login failed');
       }
-
-    } catch (err) {
+    } catch {
       setError('Connection error');
     } finally {
       setLoading(false);
     }
-
   };
 
   return (
-    <div className="login-form">
-      <div className="login-header">
-        <h2>Sports League Management</h2>
-        <p>Sign in to your account</p>
-      </div>
+    <Container className="d-flex align-items-center justify-content-center" style={{ minHeight: '80vh' }}>
+      <Row className="w-100 justify-content-center">
+        <Col xs={12} sm={10} md={6} lg={4}>
+          <div style={{
+            backgroundColor: 'rgba(200, 202, 204, 0.85)', // gris claro semi-transparente
+            padding: '2rem',
+            borderRadius: '12px',
+            boxShadow: '0 8px 20px rgba(0,0,0,0.3)',
+          }}>
+            <h2 className="text-center mb-3" style={{ color: '#212529' }}>Sports League Management</h2>
+            <p className="text-center mb-4" style={{ color: '#343a40' }}>Sign in to your account</p>
 
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="username">Username</label>
-          <input
-            type="text"
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-            placeholder="Enter your username"
-            disabled={loading}
-          />
-        </div>
+            {error && <Alert variant="danger">{error}</Alert>}
 
-        <div className="form-group">
-          <label htmlFor="password">Password</label>
-          <div className="password-input">
-            <input
-              type={showPassword ? 'text' : 'password'}
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              placeholder="Enter your password"
-              disabled={loading}
-            />
-            <button
-              type="button"
-              className="toggle-password"
-              onClick={() => setShowPassword(!showPassword)}
-              disabled={loading}
-            >
-              {showPassword ? (
-                <i className="fas fa-eye-slash"></i>
-              ) : (
-                <i className="fas fa-eye"></i>
-              )}
-            </button>
+            <Form onSubmit={handleSubmit}>
+              <Form.Group className="mb-3" controlId="username">
+                <Form.Label style={{ color: '#212529' }}>Username</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter your username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  disabled={loading}
+                  required
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-3" controlId="password">
+                <Form.Label style={{ color: '#212529' }}>Password</Form.Label>
+                <InputGroup>
+                  <Form.Control
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    disabled={loading}
+                    required
+                  />
+                  <Button
+                    variant="outline-dark"
+                    onClick={() => setShowPassword(!showPassword)}
+                    disabled={loading}
+                  >
+                    <i className={`fas ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`}></i>
+                  </Button>
+                </InputGroup>
+              </Form.Group>
+
+              <Button type="submit" variant="danger" className="w-100" disabled={loading}>
+                {loading ? 'Signing in...' : 'Sign In'}
+              </Button>
+            </Form>
+
+            <div className="text-center mt-3">
+              <p style={{ color: '#343a40' }}>Need help? <a href="#" style={{ color: '#D4AF37' }}>Contact support</a></p>
+            </div>
           </div>
-        </div>
+        </Col>
 
-        {error && (
-          <div className="alert alert-error">
-            {error}
-          </div>
-        )}
-
-        <button
-          type="submit"
-          className="btn-login"
-          disabled={loading}
-        >
-          {loading ? 'Signing in...' : 'Sign In'}
-        </button>
-      </form>
-
-      <div className="login-footer">
-        <p>Need help? <a href="#">Contact support</a></p>
-      </div>
-    </div>
-  )
+      </Row>
+    </Container>
+  );
 }
