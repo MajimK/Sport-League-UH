@@ -4,7 +4,7 @@ from app.schemas.teams import TeamCreate
 from app.schemas.utils import AddPlayersResponse, AddPlayersRequest
 from app.schemas.players import PlayerCreate
 from sqlmodel import Session
-from app.utils.extract_data import (extract_players, extract_teams, FacultadEnum, SportEnum)
+from app.utils.extract_data import (extract_players, fetch_players_from_nextcloud, FacultadEnum, SportEnum)
 from app.core.players import save_player
 from app.core.teams import save_team, get_teams_by_name
 from app.core.teams import add_players_to_team
@@ -61,6 +61,18 @@ def get_players_forms(session: Session=Depends(get_session)):
                 print(f"{e}")
     except ValueError as e:
         return status.HTTP_500_INTERNAL_SERVER_ERROR
+    
+@router.get("/charge-data-nextcloud", status_code= status.HTTP_201_CREATED)
+def get_players(session= Depends(get_session)):
+    all_players = fetch_players_from_nextcloud()
+    for player in all_players:
+        try:
+            save_player(player, session)
+        except ValueError as e:
+            print(e)
+            continue
+
+
 
 
 
