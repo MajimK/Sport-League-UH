@@ -21,6 +21,6 @@ bcrypt
 passlib
 pandas
 requests
-
+python-docx
 # CORS middleware (si usas frontend separado)
 starlette==0.41.0
