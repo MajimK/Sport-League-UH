@@ -1,0 +1,12 @@
+/frontend/
+
+# Python
+__pycache__/
+*.pyc
+
+# Git
+.git
+.gitignore
+
+# Env
+.env

@@ -19,7 +19,7 @@ def get_all_players(session: Session):
     return players
 
 def save_player(player: PlayerCreate, session: Session):
-    existing_player = get_player_by_CI(player.name, session)
+    existing_player = get_player_by_CI(player.CI, session)
     if existing_player:
         raise ValueError("El deportista ya existe")
 

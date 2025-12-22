@@ -1,59 +1,87 @@
-from flask import render_template, request, redirect, url_for, flash
-from app.database.db import get_db
-from app.routes.admin_routes import admin_bp
-from app.routes.admin.decorators import admin_or_manager_required
+from fastapi import APIRouter, Depends, HTTPException, status
+from app.database.db import get_session
+from app.schemas.leagues import LeagueCreate, LeagueOut
+from app.schemas.teams import TeamOut
+from app.schemas.players import PlayerOut
+from app.schemas.season import SeasonOut
+from sqlmodel import Session
+from app.core.league import (get_all_leagues, 
+                            save_league, 
+                            get_league_by_id, 
+                            get_players_by_league, 
+                            get_teams_by_league,
+                            get_seasons_by_league)
 
-@admin_bp.route('/manage_matches', methods=['GET', 'POST'])
-@admin_or_manager_required
-def manage_matches():
-    db = get_db()
-    cur = db.cursor()
 
-    if request.method == 'POST':
-        try:
-            match_id = request.form.get('match_id')
-            date = request.form['date']
-            team1_id = request.form['team1_id']
-            team2_id = request.form['team2_id']
-            season_id = request.form['season_id']
-            league_id = request.form['league_id']
+router = APIRouter(prefix="/matches", tags=["matches"])
 
-            if 'submit' in request.form:
-                if match_id:
-                    cur.execute('UPDATE matches SET utc_date = %s, home_team_id = %s, away_team_id = %s, season_id = %s, league_id = %s WHERE match_id = %s', 
-                                (date, team1_id, team2_id, season_id, league_id, match_id))
-                    flash('Match updated successfully', 'success')
-                else:
-                    cur.execute('INSERT INTO matches (utc_date, home_team_id, away_team_id, season_id, league_id) VALUES (%s, %s, %s, %s, %s)', 
-                                (date, team1_id, team2_id, season_id, league_id))
-                    flash('Match added successfully', 'success')
-            elif 'delete' in request.form:
-                match_id = request.form['deleteEntityId']
-                cur.execute('DELETE FROM matches WHERE match_id = %s', (match_id,))
-                flash('Match deleted successfully', 'success')
-            db.commit()
-        except Exception as e:
-            db.rollback()
-            flash('An error occurred: ' + str(e), 'error')
-        finally:
-            cur.close()
-        return redirect(url_for('admin.manage_matches'))
 
-    cur.execute('''
-        SELECT m.match_id, m.utc_date, t1.name AS team1, t2.name AS team2, s.year AS season, l.name AS league,
-               m.home_team_id, m.away_team_id
-        FROM matches m
-        JOIN teams t1 ON m.home_team_id = t1.team_id
-        JOIN teams t2 ON m.away_team_id = t2.team_id
-        JOIN seasons s ON m.season_id = s.season_id
-        JOIN leagues l ON m.league_id = l.league_id
-    ''')
-    matches = cur.fetchall()
-    cur.execute('SELECT team_id, name FROM teams')
-    teams = cur.fetchall()
-    cur.execute('SELECT season_id, year FROM seasons')
-    seasons = cur.fetchall()
-    cur.execute('SELECT league_id, name FROM leagues')
-    leagues = cur.fetchall()
-    cur.close()
-    return render_template('manage_matches.html', matches=matches, teams=teams, seasons=seasons, leagues=leagues)
+@router.get("/", response_model=list[LeagueOut])
+def get_leagues(session: Session=Depends(get_session)):
+    league = get_all_leagues(session)
+    return league
+
+@router.get("/{league_id}", response_model=LeagueOut)
+def get_one_league(league_id: int, session= Depends(get_session)):
+    league = get_league_by_id(league_id, session)
+    if not league:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No existe el equipo")
+    return league
+
+# Esta ruta va en otra parte
+@router.get("/{league_id}/teams", response_model=list[TeamOut])
+def get_teams(league_id: int, session= Depends(get_session)):
+    teams = get_teams_by_league(league_id, session)
+    return teams
+
+# Esta ruta no va dento de admin
+@router.get("/{league_id}/players", response_model= list[PlayerOut])
+def get_players(league_id: int, session = Depends(get_session)):
+    players = get_players_by_league(league_id, session)
+    return players
+
+@router.get("/{league_id}/seasons", response_model=SeasonOut)
+def get_seasons(league_id: int, session = Depends(get_session)):
+    seasons = get_seasons_by_league(league_id, session)
+    return seasons
+
+@router.post("/", response_model=LeagueOut, status_code=status.HTTP_201_CREATED)
+def create_league(league: LeagueCreate, session=Depends(get_session)):
+    try:
+        return save_league(league, session)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+
+
+# @router.put("/{team_id}", response_model=TeamOut)
+# def update_team(team_id: int, team: TeamUpdate, db=Depends(get_session)):
+#     cur = db.cursor(cursor_factory=RealDictCursor)
+
+#     cur.execute(
+#         "UPDATE teams SET name=%s, description=%s WHERE id=%s RETURNING id, name, description",
+#         (team.name, team.description, team_id),
+#     )
+
+#     updated = cur.fetchone()
+#     if not updated:
+#         raise HTTPException(status_code=404, detail="Team not found")
+
+#     db.commit()
+#     return updated
+
+
+# @router.delete("/{team_id}")
+# def delete_team(team_id: int, db=Depends(get_session)):
+#     cur = db.cursor()
+
+#     cur.execute("DELETE FROM teams WHERE id=%s RETURNING id", (team_id,))
+#     result = cur.fetchone()
+
+#     if not result:
+#         raise HTTPException(status_code=404, detail="Team not found")
+
+#     db.commit()
+#     return {"message": "Team deleted successfully"}
