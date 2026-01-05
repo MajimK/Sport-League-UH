@@ -2,15 +2,17 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Copiar package files
-COPY package*.json ./
-COPY pnpm-lock.yaml ./
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-# Instalar dependencias
-RUN npm install -g pnpm && \
-    pnpm install --frozen-lockfile
+# Copy requirements first to leverage Docker cache
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copiar aplicación
+# Copy the rest of the application
 COPY . .
 
 # Expose the port the app runs on
