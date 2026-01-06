@@ -214,4 +214,5 @@ static/fonts/
 # Si mantienes en static/ → ignora frontend/public/static/
 frontend/public/static/images/
 frontend/public/static/fonts/
+Sport
 '@ | Add-Content -Path ".gitignore" -Encoding UTF8
