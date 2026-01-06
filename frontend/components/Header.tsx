@@ -147,15 +147,6 @@ export default function Header() {
                                     Multimedia
                                 </NavDropdown.Item>
                             </NavDropdown>
-
-                            <Nav.Link
-                                href="/login"
-                                style={navLinkStyle}
-                                onMouseOver={handleMouseOver}
-                                onMouseOut={handleMouseOut}
-                            >
-                                <i className="fas fa-sign-in-alt"></i> Login
-                            </Nav.Link>
                         </Nav>
                     </Navbar.Collapse>
                 </Container>
