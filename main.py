@@ -5,7 +5,7 @@ from app.database.db import reset_db
 from app.database.db import seed_data
 # Importar routers
 from app.routes.admin_routes import admin_router
-# from app.routes.user import router as user_router
+from app.routes.user_routes import users_router
 from app.routes.auth import router as auth_router
 
 
@@ -28,7 +28,7 @@ app.add_middleware(
 
 
 # # Registrar routers
-# app.include_router(user_router, prefix="/user", tags=["User"])
+app.include_router(users_router, prefix="/user", tags=["User"])
 app.include_router(admin_router, prefix="/admin", tags=["Admin"])
 app.include_router(auth_router, prefix="/auth", tags=["Auth"])
 

@@ -4,7 +4,8 @@ from app.database.models.MatchTeam import MatchTeam
 from app.database.models.history import Season_league_team_player
 from app.database.models.players import Players
 from app.database.models.teams import Team
-from app.schemas.match import SearchLeagueMatches, TeamScore, MatchScore
+from app.schemas.match import SearchLeagueMatches, TeamScore, MatchScore, MatchOut,CreateMatches
+from app.database.models.MatchTeam import TeamRole
 
 
 def get_match_by_id(match_id: int, session: Session):
@@ -12,18 +13,48 @@ def get_match_by_id(match_id: int, session: Session):
     match = session.exec(query).first()
     return match
 
-# def get_matches_by_league(search: SearchLeagueMatches, session: Session):
-#     query = (select(Match)
-#             .where(
-#                 and_(Match.season_id == search.season_id,
-#                      Match.league_id == search.league_id))
-#             .limit(100))
-#     rows = session.exec(query).all()
+def get_matches_by_league(search: SearchLeagueMatches, session: Session):
+    query = (select(Match)
+            .where(
+                and_(Match.season_id == search.season_id,
+                     Match.league_id == search.league_id))
+            .limit(100))
+    matches = session.exec(query).all()
+    matches_out = []
 
-#     for match in rows:
+    for match in matches:
+        query_matchTeam = select(MatchTeam).where(MatchTeam.match_id == match.match_id)
+        matchTeam = session.exec(query_matchTeam).all()
+
+        if len(matchTeam) != 2:
+            continue
+
+        home = next(mt for mt in matchTeam if mt.role == "home")
+        away = next(mt for mt in matchTeam if mt.role == "away")
+
+        if not home or not away:
+            continue
+
+        home_team = session.get(Team, home.team_id)
+        away_team = session.get(Team, away.team_id)
+
+        if not home_team or not away_team:
+            continue
+
+        matches_out.append(
+            MatchOut(
+                match_id=match.match_id,
+                month=match.month,
+                day= match.day,
+                team_home=home_team.name,
+                team_home_id=home_team.team_id,
+                team_away=away_team.name,
+                team_away_id=away_team.team_id,
+                score=MatchScore(home=TeamScore(team_id=home.team_id, team_name=home_team.name,score=home.score), away= TeamScore(team_id=away.team_id, team_name=away_team.name, score=away.score))
+            )
+        )
         
-        
-#     return matches
+    return matches_out
 
 def get_teams_in_match(match_id: int, session: Session):
     query = (select(Team)
@@ -59,6 +90,84 @@ def get_score_in_match(match_id: int, session: Session):
             result[row.role] = team_score   
 
     return MatchScore(home=result["home"], away=result["away"])
+
+def create_matches(create: CreateMatches, session: Session):
+
+    # 1️⃣ Buscar equipos por nombre
+    home_team = session.exec(
+        select(Team).where(Team.name == create.home_name)
+    ).first()
+
+    away_team = session.exec(
+        select(Team).where(Team.name == create.away_name)
+    ).first()
+
+    if not home_team or not away_team:
+        raise ValueError("Uno o ambos equipos no existen")
+
+    # 2️⃣ No puede jugar contra sí mismo
+    if home_team.team_id == away_team.team_id:
+        raise ValueError("Un equipo no puede jugar contra sí mismo")
+
+    # 3️⃣ Evitar duplicado exacto accidental
+    existing_match = session.exec(
+        select(Match)
+        .join(MatchTeam)
+        .where(
+            and_(
+                Match.season_id == create.season_id,
+                Match.league_id == create.league_id,
+                Match.month == create.month,
+                Match.day == create.day,
+                MatchTeam.team_id == home_team.team_id,
+                MatchTeam.team_id == away_team.team_id
+                )
+            )
+    ).first()
+
+    if existing_match:
+        raise ValueError("Este partido ya existe")
+
+    # 4️⃣ Crear Match
+    match = Match(
+        season_id=create.season_id,
+        league_id=create.league_id,
+        month=create.month,
+        day=create.day,
+        location=create.location
+    )
+
+    session.add(match)
+    session.commit()
+    session.refresh(match)
+
+    if not match or not home_team or away_team:
+        print(home_team)
+        print(match)
+        print(away_team)
+
+    # 5️⃣ Crear MatchTeam (home)
+    match_home = MatchTeam(
+        match_id=match.match_id or 0,
+        team_id=home_team.team_id or 0,
+        role=TeamRole.home,
+        score=0
+    )
+
+    # 6️⃣ Crear MatchTeam (away)
+    match_away = MatchTeam(
+        match_id=match.match_id or 0,
+        team_id=away_team.team_id or 0,
+        role=TeamRole.away,
+        score=0
+    )
+
+    session.add(match_home)
+    session.add(match_away)
+    session.commit()
+
+    return match
+
 
 # def save_league(league: LeagueCreate, session: Session):
 #     existing_league = get_league_by_name(league.name, session)

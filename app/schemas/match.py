@@ -25,6 +25,13 @@ class SearchLeagueMatches(BaseModel):
     season_id: int
     league_id: int
 
+class CreateMatches(SearchLeagueMatches):
+    month: int
+    day: int
+    location: str
+    home_name: str
+    away_name: str
+
 class TeamScore(BaseModel):
     team_id: int
     team_name: str
@@ -34,10 +41,16 @@ class MatchScore(BaseModel):
     home: TeamScore
     away: TeamScore
 
+    
+
 class MatchOut(BaseModel):
-    match_id: int
+    match_id: int|None
     month: int
     day: int
+    team_home: str
+    team_home_id: int | None
+    team_away:str
+    team_away_id: int | None
     score: MatchScore
 
 
