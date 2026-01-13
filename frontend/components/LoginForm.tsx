@@ -7,6 +7,7 @@ import { Container, Row, Col, Form, Button, InputGroup, Alert } from 'react-boot
 export default function LoginForm() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [faculty, setFaculty] = useState(''); // ← Nuevo estado
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -23,7 +24,7 @@ export default function LoginForm() {
       const response = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username, password, faculty }), // ← Incluye faculty
         credentials: 'include',
       });
 
@@ -53,7 +54,7 @@ export default function LoginForm() {
       <Row className="w-100 justify-content-center">
         <Col xs={12} sm={10} md={6} lg={4}>
           <div style={{
-            backgroundColor: 'rgba(200, 202, 204, 0.85)', // gris claro semi-transparente
+            backgroundColor: 'rgba(200, 202, 204, 0.85)',
             padding: '2rem',
             borderRadius: '12px',
             boxShadow: '0 8px 20px rgba(0,0,0,0.3)',
@@ -64,6 +65,19 @@ export default function LoginForm() {
             {error && <Alert variant="danger">{error}</Alert>}
 
             <Form onSubmit={handleSubmit}>
+              {/* Campo de facultad añadido */}
+              <Form.Group className="mb-3" controlId="faculty">
+                <Form.Label style={{ color: '#212529' }}>Facultad</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter your faculty"
+                  value={faculty}
+                  onChange={(e) => setFaculty(e.target.value)}
+                  disabled={loading}
+                  required
+                />
+              </Form.Group>
+
               <Form.Group className="mb-3" controlId="username">
                 <Form.Label style={{ color: '#212529' }}>Username</Form.Label>
                 <Form.Control
@@ -107,7 +121,6 @@ export default function LoginForm() {
             </div>
           </div>
         </Col>
-
       </Row>
     </Container>
   );
