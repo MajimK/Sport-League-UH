@@ -3,7 +3,7 @@ from config import Config
 from sqlalchemy import text
 from sqlmodel import Session, select
 from app.database.models.games import Games, League_games
-from app.database.models.users import Users
+from app.database.models.users import Users, UserRole, Permission, UserPermission
 from app.database.models.leagues import Leagues
 from app.database.models.seasons import Season
 from app.database.models.teams import Team
@@ -59,10 +59,15 @@ def seed_data():
         # -------------------------
         # 1) Crear Deportes (Games)
         # -------------------------
-        user = Users(username= "root", password="$pbkdf2-sha256$29000$AUCodU4pZcyZMwZAyJnzPg$4FHcWRF6Mmyf6tFLTeL7nOsxLOMG7WXCCwpYh8XoHw8",
-                     email= "root@rect.uh.cu", is_admin=True)
+        user = Users(
+            username="root",
+            email="root@rect.uh.cu",
+            password="$pbkdf2-sha256$29000$AUCodU4pZcyZMwZAyJnzPg$4FHcWRF6Mmyf6tFLTeL7nOsxLOMG7WXCCwpYh8XoHw8",
+            faculty="UH",
+            role=UserRole.admin 
+        )
         session.add(user)
-
+        session.commit()
         # Lista existente más la nueva lista de juegos solicitada
         juegos_nuevos = [
             "Kickingball femenino",
@@ -159,5 +164,39 @@ def seed_data():
                 session.add(season)
 
         session.commit()
+        # -------------------------
+        # 5) Crear Permisos base
+        # -------------------------
+        permisos = [
+            "create_user",
+            "delete_user",
+            "update_user",
+            "register_player",
+            "comment_match",
+            "publish_match"
+        ]
+
+        for perm_name in permisos:
+            if not session.exec(select(Permission).where(Permission.name == perm_name)).first():
+                session.add(Permission(name=perm_name))
+        session.commit()
+
+        # -------------------------
+        # 6) Asignar todos los permisos al admin
+        # -------------------------
+        admin_user = session.exec(select(Users).where(Users.username == "root")).first()
+        for perm_name in permisos:
+            perm = session.exec(select(Permission).where(Permission.name == perm_name)).first()
+            if perm and not session.exec(
+                select(UserPermission).where(
+                    (UserPermission.user_id == admin_user.user_id) &
+                    (UserPermission.permission_id == perm.id)
+                )
+            ).first():
+                session.add(UserPermission(user_id=admin_user.user_id, permission_id=perm.id))
+
+        # !!! Aquí es donde faltaba el commit !!!
+        session.commit()
+
 
         print("🌱 Base de datos sembrada con éxito! (incluye nuevos juegos)")

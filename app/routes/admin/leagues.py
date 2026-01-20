@@ -1,15 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from app.database.db import get_session
 from app.schemas.leagues import LeagueCreate, LeagueOut
-from app.schemas.teams import TeamOut
-from app.schemas.players import PlayerOut
 from app.schemas.season import SeasonOut
 from sqlmodel import Session
 from app.core.league import (get_all_leagues, 
                             save_league, 
                             get_league_by_id, 
-                            get_players_by_league, 
-                            get_teams_by_league,
                             get_seasons_by_league)
 
 
@@ -28,17 +24,6 @@ def get_one_league(league_id: int, session= Depends(get_session)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No existe el equipo")
     return league
 
-# Esta ruta va en otra parte
-@router.get("/{league_id}/teams", response_model=list[TeamOut])
-def get_teams(league_id: int, session= Depends(get_session)):
-    teams = get_teams_by_league(league_id, session)
-    return teams
-
-# Esta ruta no va dento de admin
-@router.get("/{league_id}/players", response_model= list[PlayerOut])
-def get_players(league_id: int, session = Depends(get_session)):
-    players = get_players_by_league(league_id, session)
-    return players
 
 @router.get("/{league_id}/seasons", response_model=SeasonOut)
 def get_seasons(league_id: int, session = Depends(get_session)):
